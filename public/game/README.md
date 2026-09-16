@@ -1,0 +1,1 @@
+Tiny Swords visual assets used by the English Level Up interface. These files are part of the visual layer only; learning scores, session logic and Supabase data are unchanged. Original asset packs were supplied by the project owner.
