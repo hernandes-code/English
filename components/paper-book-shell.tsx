@@ -40,7 +40,7 @@ export function PaperBookShell({ children: _children }: { children: React.ReactN
         <div className="book-stage">
           <EdgeControl direction="previous" href={previous?.href} label={previous ? `Previous: ${previous.label}` : 'First chapter'} />
 
-          <div className="book-spread" key={pathname}>
+          <div className="book-spread">
             <PaperStackFrame side="left" />
             <PaperStackFrame side="right" />
 
@@ -82,7 +82,7 @@ export function PaperBookShell({ children: _children }: { children: React.ReactN
 
           <nav className="book-tabs" aria-label="Book chapters">
             {chapters.map((item) => (
-              <Link key={item.href} href={item.href} className={pathname === item.href ? 'is-active' : ''} aria-current={pathname === item.href ? 'page' : undefined}>
+              <Link scroll={false} key={item.href} href={item.href} className={pathname === item.href ? 'is-active' : ''} aria-current={pathname === item.href ? 'page' : undefined}>
                 <b>{item.number}</b>
                 <span>{item.label}</span>
               </Link>
@@ -92,7 +92,7 @@ export function PaperBookShell({ children: _children }: { children: React.ReactN
 
         <nav className="book-tabs-mobile" aria-label="Book chapters mobile">
           {chapters.map((item) => (
-            <Link key={item.href} href={item.href} className={pathname === item.href ? 'is-active' : ''} aria-current={pathname === item.href ? 'page' : undefined}>
+            <Link scroll={false} key={item.href} href={item.href} className={pathname === item.href ? 'is-active' : ''} aria-current={pathname === item.href ? 'page' : undefined}>
               <b>{item.number}</b>
               <span>{item.label}</span>
             </Link>
@@ -145,5 +145,5 @@ function EdgeControl({ direction, href, label }: { direction: 'previous' | 'next
   );
 
   if (!href) return <button className={`book-edge-control book-edge-control--${direction}`} disabled aria-label={label}>{content}</button>;
-  return <Link className={`book-edge-control book-edge-control--${direction}`} href={href} aria-label={label}>{content}</Link>;
+  return <Link scroll={false} className={`book-edge-control book-edge-control--${direction}`} href={href} aria-label={label}>{content}</Link>;
 }
