@@ -6,6 +6,8 @@ import type { Benchmark, Sprint } from '@/lib/types';
 type Point = { x: number; y: number };
 type LandmarkKind = 'house' | 'barracks' | 'castle' | 'monastery' | 'tower';
 
+type LandmarkPoint = Point & { kind: LandmarkKind; edge?: 'left' | 'right' };
+
 const POINTS = {
   baseline: { x: 12, y: 79 },
   sprintOne: { x: 30, y: 70 },
@@ -16,12 +18,12 @@ const POINTS = {
 } satisfies Record<string, Point>;
 
 const LANDMARKS = {
-  baseline: { x: 12, y: 64, kind: 'house' as LandmarkKind },
+  baseline: { x: 12, y: 64, kind: 'house' as LandmarkKind, edge: 'left' as const },
   sprintOne: { x: 30, y: 55, kind: 'barracks' as LandmarkKind },
   benchmarkOne: { x: 49, y: 34, kind: 'castle' as LandmarkKind },
   sprintTwo: { x: 68, y: 55, kind: 'monastery' as LandmarkKind },
   benchmarkTwo: { x: 84, y: 34, kind: 'castle' as LandmarkKind },
-  review: { x: 93, y: 64, kind: 'tower' as LandmarkKind },
+  review: { x: 93, y: 64, kind: 'tower' as LandmarkKind, edge: 'right' as const },
 };
 
 export function JourneyMap({ sprint, benchmarks = [] }: { sprint?: Sprint; benchmarks?: Benchmark[] }) {
@@ -84,11 +86,11 @@ export function JourneyMap({ sprint, benchmarks = [] }: { sprint?: Sprint; bench
   );
 }
 
-function Landmark({ point, featured = false, muted = false }: { point: Point & { kind: LandmarkKind }; featured?: boolean; muted?: boolean }) {
+function Landmark({ point, featured = false, muted = false }: { point: LandmarkPoint; featured?: boolean; muted?: boolean }) {
   const src = `/game/${point.kind}.png`;
   return (
     <div
-      className={`journey-landmark ${featured ? 'journey-landmark--featured' : ''} ${muted ? 'journey-landmark--muted' : ''}`}
+      className={`journey-landmark journey-landmark--${point.kind} ${point.edge ? `journey-landmark--edge-${point.edge}` : ''} ${featured ? 'journey-landmark--featured' : ''} ${muted ? 'journey-landmark--muted' : ''}`}
       style={{ left: `${point.x}%`, top: `${point.y}%` }}
       aria-hidden="true"
     >
