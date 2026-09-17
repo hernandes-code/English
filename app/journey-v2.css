@@ -181,12 +181,21 @@
 }
 
 @media (max-width:640px){
+  /* game-v2.css gives .journey-world a desktop aspect-ratio. Reset it on
+     phones so the dedicated vertical journey can determine the card height. */
+  .journey-world{
+    aspect-ratio:auto;
+    height:auto;
+    min-height:0;
+  }
+
   .journey-world__desktop{display:none}
 
   .journey-mobile{
     position:relative;
     display:block;
     min-height:680px;
+    height:auto;
     padding:30px 14px 34px;
     overflow:hidden;
     isolation:isolate;
