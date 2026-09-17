@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import './game-v2.css';
 import './sidebar-v2.css';
+import './journey-v2.css';
 import { LearningProvider } from '@/components/learning-provider';
 
 export const metadata: Metadata = {
