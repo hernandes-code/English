@@ -350,6 +350,9 @@ Build only:
 
 Do **not** redesign Dashboard content until this shell is approved on desktop and mobile.
 
+### Stage 1 implementation note
+The first Stage 1 shell uses the Plain modular page-frame pieces `10.png`–`17.png` plus the sliced previous/next button pieces `16.png`–`18.png` and `28.png`–`30.png`. Direct chapter access is implemented as HTML paper tabs for the first shell validation; the decorative Cutout tab sprites remain reserved until the tab proportions are validated against the real book shell.
+
 ## Stage 2 — Dashboard
 Use the mapping in section 2.
 
