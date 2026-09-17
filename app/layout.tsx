@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import './game-theme.css';
 import { LearningProvider } from '@/components/learning-provider';
 
 export const metadata: Metadata = {
