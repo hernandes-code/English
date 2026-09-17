@@ -3,38 +3,67 @@
 import { PixelAvatar } from './core-ui';
 import type { Benchmark, Sprint } from '@/lib/types';
 
+type JourneyNodeState = 'done' | 'current' | 'next' | 'locked';
+
+type JourneyAnchor = {
+  x: number;
+  y: number;
+  label: string;
+  marker: string;
+  state: JourneyNodeState;
+};
+
+const WORLD_WIDTH = 1200;
+const WORLD_HEIGHT = 520;
+
 export function JourneyMap({ sprint, benchmarks = [] }: { sprint?: Sprint; benchmarks?: Benchmark[] }) {
   const sprintId = Number(sprint?.sprint_id ?? 1);
   const completed = Number(sprint?.completed_sessions ?? 0);
   const target = Number(sprint?.sprint_target_max ?? 25);
   const progress = Math.max(0, Math.min(1, target ? completed / target : 0));
-  const isFirst = sprintId % 2 === 1;
-  const localSprint = isFirst ? 1 : 2;
-  const start = localSprint === 1 ? { x: 31, y: 66 } : { x: 67, y: 40 };
-  const end = localSprint === 1 ? { x: 50, y: 45 } : { x: 83, y: 30 };
-  const avatar = { x: start.x + (end.x - start.x) * progress, y: start.y + (end.y - start.y) * progress };
+  const localSprint = sprintId % 2 === 1 ? 1 : 2;
+  const cycleFirstSprint = localSprint === 1 ? sprintId : sprintId - 1;
   const benchmarkCount = benchmarks.length;
-  const firstBenchmarkDone = benchmarkCount >= sprintId - (localSprint === 2 ? 1 : 0) && localSprint === 2;
+  const benchmarkOneDone = benchmarkCount >= cycleFirstSprint;
+  const benchmarkTwoDone = benchmarkCount >= cycleFirstSprint + 1;
 
-  return <div className="journey-map">
-    <div className="journey-map__stars" />
-    <svg className="journey-map__route" viewBox="0 0 1000 350" preserveAspectRatio="none" aria-hidden="true"><path d="M95 245 C210 185 250 260 340 220 S455 135 525 150 S630 205 690 135 S820 70 900 115"/></svg>
-    <Island className="journey-map__island journey-map__island--one" />
-    <Island className="journey-map__island journey-map__island--two" />
-    <Island className="journey-map__island journey-map__island--three" />
-    <Island className="journey-map__island journey-map__island--four" />
-    <Node x={10} y={69} label="Baseline" state="done" marker="✓" />
-    <Node x={31} y={66} label={`Sprint ${sprintId - (localSprint === 2 ? 1 : 0)}`} state={localSprint===1?'current':'done'} marker={localSprint===1?String(sprintId):'✓'} />
-    <Node x={50} y={45} label="Benchmark" state={localSprint===2 || firstBenchmarkDone ? 'done':'next'} marker="B" />
-    <Node x={67} y={40} label={`Sprint ${localSprint===1?sprintId+1:sprintId}`} state={localSprint===2?'current':'locked'} marker={localSprint===2?String(sprintId):'2'} />
-    <Node x={83} y={30} label="Benchmark" state="locked" marker="B" />
-    <Node x={91} y={53} label="Strategic Review" state="locked" marker="★" />
-    <div className="journey-map__avatar" style={{ left: `${avatar.x}%`, top: `${avatar.y}%` }}><PixelAvatar size="sm"/></div>
-  </div>;
+  const anchors: JourneyAnchor[] = [
+    { x: 12.5, y: 67, label: 'Baseline', marker: '✓', state: 'done' },
+    { x: 30.5, y: 60, label: `Sprint ${cycleFirstSprint}`, marker: localSprint === 1 ? String(sprintId) : '✓', state: localSprint === 1 ? 'current' : 'done' },
+    { x: 49, y: 42, label: 'Benchmark', marker: 'B', state: benchmarkOneDone || localSprint === 2 ? 'done' : 'next' },
+    { x: 67.5, y: 60, label: `Sprint ${cycleFirstSprint + 1}`, marker: localSprint === 2 ? String(sprintId) : '2', state: localSprint === 2 ? 'current' : 'locked' },
+    { x: 83, y: 42, label: 'Benchmark', marker: 'B', state: benchmarkTwoDone ? 'done' : 'locked' },
+    { x: 93, y: 68, label: 'Strategic Review', marker: '★', state: benchmarkTwoDone ? 'next' : 'locked' },
+  ];
+
+  const currentStart = localSprint === 1 ? anchors[1] : anchors[3];
+  const currentEnd = localSprint === 1 ? anchors[2] : anchors[4];
+  const avatar = {
+    x: currentStart.x + (currentEnd.x - currentStart.x) * progress,
+    y: currentStart.y + (currentEnd.y - currentStart.y) * progress,
+  };
+
+  return (
+    <div className="journey-world" aria-label={`Sprint ${sprintId} learning journey`}>
+      <div className="journey-world__scene" aria-hidden="true">
+        <img src="/game-v2/journey-scene.png" alt="" className="journey-world__art" />
+      </div>
+      <svg className="journey-world__route" viewBox={`0 0 ${WORLD_WIDTH} ${WORLD_HEIGHT}`} preserveAspectRatio="none" aria-hidden="true">
+        <path d="M150 350 C230 335 290 325 365 310 C455 285 515 220 585 220 C680 220 735 305 810 305 C900 305 935 220 995 220 C1060 225 1095 320 1120 350" />
+      </svg>
+      {anchors.map((anchor) => <Node key={`${anchor.label}-${anchor.x}`} {...anchor} />)}
+      <div className="journey-world__avatar" style={{ left: `${avatar.x}%`, top: `${avatar.y}%` }} aria-hidden="true">
+        <PixelAvatar size="sm" />
+      </div>
+    </div>
+  );
 }
 
-function Island({ className }: { className: string }) { return <div className={className}><i/><i/><i/></div>; }
-
-function Node({ x,y,label,state,marker }: { x:number;y:number;label:string;state:'done'|'current'|'next'|'locked';marker:string }) {
-  return <div className={`journey-node journey-node--${state}`} style={{ left:`${x}%`,top:`${y}%` }}><b>{marker}</b><span>{label}</span></div>;
+function Node({ x, y, label, state, marker }: JourneyAnchor) {
+  return (
+    <div className={`journey-marker journey-marker--${state}`} style={{ left: `${x}%`, top: `${y}%` }}>
+      <b>{marker}</b>
+      <span>{label}</span>
+    </div>
+  );
 }
