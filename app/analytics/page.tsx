@@ -1,3 +1,3 @@
-import { AppShell } from '@/components/core-ui';
+import { PaperBookShell } from '@/components/paper-book-shell';
 import { AnalyticsView } from '@/components/analytics-view';
-export default function AnalyticsPage(){return <AppShell><AnalyticsView/></AppShell>}
+export default function AnalyticsPage(){return <PaperBookShell><AnalyticsView/></PaperBookShell>}

@@ -1,3 +1,3 @@
-import { AppShell } from '@/components/core-ui';
+import { PaperBookShell } from '@/components/paper-book-shell';
 import { SessionsView } from '@/components/sessions-view';
-export default function SessionsPage(){return <AppShell><SessionsView/></AppShell>}
+export default function SessionsPage(){return <PaperBookShell><SessionsView/></PaperBookShell>}
