@@ -1,0 +1,208 @@
+/* Stage 1.1 — physical-book polish layer. Visual only. */
+
+.paper-desk{position:relative;isolation:isolate}
+.paper-desk__shade{
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  background:
+    radial-gradient(ellipse at 50% 45%,transparent 34%,rgba(67,34,23,.08) 72%,rgba(48,25,18,.18) 100%),
+    linear-gradient(rgba(83,46,31,.08),rgba(83,46,31,.08));
+}
+.paper-book-brand,.book-stage,.book-tabs-mobile{position:relative;z-index:2}
+
+.book-stage{isolation:isolate}
+.book-spread{
+  z-index:4;
+  filter:drop-shadow(0 26px 30px rgba(61,34,21,.34)) drop-shadow(0 7px 6px rgba(61,34,21,.15));
+}
+.book-page{z-index:3}
+.book-page--left{box-shadow:inset -18px 0 28px rgba(83,57,37,.14),inset 0 -7px 14px rgba(91,62,39,.035)}
+.book-page--right{box-shadow:inset 18px 0 28px rgba(83,57,37,.14),inset 0 -7px 14px rgba(91,62,39,.035)}
+
+/* Secondary Paper UI frame, offset behind the live page, creates a real page stack. */
+.book-page-stack{
+  position:absolute;
+  top:7px;
+  bottom:-9px;
+  z-index:1;
+  background:#e7d4ad;
+  pointer-events:none;
+  box-shadow:0 9px 11px rgba(72,42,26,.16);
+}
+.book-page-stack--left{left:-7px;width:calc(50% + 7px);border-radius:5px 0 0 6px}
+.book-page-stack--right{left:50%;right:-7px;border-radius:0 5px 6px 0}
+.stack-edge,.stack-corner{position:absolute;z-index:2;pointer-events:none;image-rendering:pixelated}
+.stack-edge--top{left:32px;right:32px;top:0;height:32px;background:url('/paper-ui/page-stack/29.png') repeat-x top left/32px 32px}
+.stack-edge--right{top:32px;bottom:32px;right:0;width:32px;background:url('/paper-ui/page-stack/31.png') repeat-y top right/32px 32px}
+.stack-edge--bottom{left:32px;right:32px;bottom:0;height:32px;background:url('/paper-ui/page-stack/33.png') repeat-x bottom left/32px 32px}
+.stack-edge--left{top:32px;bottom:32px;left:0;width:32px;background:url('/paper-ui/page-stack/27.png') repeat-y top left/32px 32px}
+.stack-corner{width:32px;height:32px}
+.stack-corner--tl{top:0;left:0}.stack-corner--tr{top:0;right:0}.stack-corner--bl{bottom:0;left:0}.stack-corner--br{bottom:0;right:0}
+
+.book-gutter{
+  z-index:9;
+  width:52px;
+  background:linear-gradient(90deg,transparent 0,rgba(92,65,43,.08) 20%,rgba(70,48,32,.22) 44%,rgba(58,39,28,.29) 50%,rgba(70,48,32,.22) 56%,rgba(92,65,43,.08) 80%,transparent 100%);
+}
+.book-gutter:before{
+  content:"";
+  position:absolute;
+  top:8px;
+  bottom:8px;
+  left:50%;
+  width:9px;
+  transform:translateX(-50%);
+  background:linear-gradient(90deg,transparent,rgba(54,36,24,.15),transparent);
+}
+
+/* Chapter tabs behave like bookmarks inserted behind the outer page edge. */
+.book-tabs{z-index:2;right:0;top:60px;width:122px;gap:8px}
+.book-tabs a{
+  min-height:48px;
+  margin-left:18px;
+  padding:5px 10px 5px 8px;
+  border-left:1px solid #b49b75;
+  border-radius:0 2px 2px 0;
+  box-shadow:3px 4px 0 rgba(74,44,28,.15),0 7px 12px rgba(74,44,28,.08);
+  transform:none;
+}
+.book-tabs a:before{
+  left:-22px;
+  width:24px;
+  top:5px;
+  bottom:5px;
+  border:1px solid #b49b75;
+  border-right:0;
+  background:#dec9a2;
+  clip-path:none;
+  box-shadow:-3px 2px 0 rgba(74,44,28,.09);
+}
+.book-tabs a:after{
+  content:"";
+  position:absolute;
+  right:0;
+  bottom:0;
+  width:14px;
+  height:10px;
+  opacity:.35;
+  background:linear-gradient(135deg,transparent 49%,#a98d66 50% 54%,transparent 55%);
+}
+.book-tabs a:hover{transform:translateX(4px)}
+.book-tabs a.is-active{transform:translateX(7px);box-shadow:4px 5px 0 rgba(74,44,28,.18),inset 0 -3px var(--paper-green)}
+.book-tabs a.is-active:before{background:#e9d6ad}
+
+/* Sliced controls now emerge from under the page instead of floating in the desk. */
+.book-edge-control{
+  z-index:2;
+  width:112px;
+  height:52px;
+  padding:10px 8px;
+  filter:drop-shadow(0 5px 5px rgba(63,37,23,.22));
+}
+.book-edge-control--previous{left:-72px}
+.book-edge-control--next{right:88px}
+.book-edge-control:hover:not([disabled]){transform:translateY(-50%) scale(1.035)}
+
+@media(max-width:980px){
+  .book-tabs{right:-3px;width:94px}.book-tabs a{margin-left:14px;padding-right:6px}.book-tabs a:before{left:-17px;width:19px}
+  .book-edge-control--previous{left:-62px}.book-edge-control--next{right:69px}
+}
+
+@media(max-width:720px){
+  .paper-desk{padding-top:10px;padding-bottom:86px;background-attachment:scroll}
+  .paper-book-brand{margin-bottom:8px;transform:scale(.88);transform-origin:center top}
+  .paper-book-brand strong{font-size:18px}.paper-book-brand span{font-size:9px}.paper-book-brand small{font-size:7px;margin-top:5px}
+  .book-spread{filter:drop-shadow(0 18px 20px rgba(61,34,21,.28)) drop-shadow(0 5px 5px rgba(61,34,21,.13))}
+  .book-page-stack--left{left:-5px;width:calc(100% + 10px);right:auto;top:5px;bottom:-7px;border-radius:5px}
+  .book-page-stack--right{display:none}
+  .book-page--left{box-shadow:inset 0 0 25px rgba(93,65,42,.07),inset 0 -9px 15px rgba(91,62,39,.04)}
+
+  .book-edge-control{
+    z-index:12;
+    bottom:7px;
+    width:92px;
+    height:48px;
+    padding:8px 5px;
+    overflow:visible;
+    touch-action:manipulation;
+  }
+  .book-edge-control--previous{left:3px}.book-edge-control--next{right:3px}
+  .page-control{transform:scale(.82);transform-origin:left center}.book-edge-control--next .page-control{transform-origin:right center}
+
+  /* Persistent direct navigation, styled as five bookmarks inserted into the book. */
+  .book-tabs-mobile{
+    position:fixed;
+    z-index:30;
+    left:8px;
+    right:8px;
+    bottom:0;
+    display:grid;
+    grid-template-columns:repeat(5,minmax(0,1fr));
+    align-items:end;
+    gap:3px;
+    padding:0 8px 7px;
+    background:transparent;
+    border:0;
+    box-shadow:none;
+    backdrop-filter:none;
+    pointer-events:none;
+  }
+  .book-tabs-mobile:before{
+    content:"";
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+    height:35px;
+    background:rgba(91,55,37,.78);
+    border:1px solid rgba(238,215,176,.22);
+    border-bottom:0;
+    box-shadow:0 -6px 14px rgba(57,32,22,.12);
+  }
+  .book-tabs-mobile a{
+    position:relative;
+    z-index:1;
+    min-height:52px;
+    display:grid;
+    align-content:end;
+    justify-items:center;
+    gap:3px;
+    padding:7px 2px 5px;
+    color:#ead4ac;
+    background:linear-gradient(180deg,#d8c39d 0 72%,#bea57d 73% 100%);
+    border:1px solid #b29568;
+    border-bottom:0;
+    border-radius:3px 3px 0 0;
+    box-shadow:0 -3px 7px rgba(63,37,23,.13);
+    pointer-events:auto;
+    transition:transform .15s ease,background .15s ease;
+  }
+  .book-tabs-mobile a>b{
+    width:27px;
+    height:27px;
+    background:#efe0bf;
+    border-color:#a88d64;
+  }
+  .book-tabs-mobile a span{color:#684f3b;font-size:6.8px}
+  .book-tabs-mobile a.is-active{
+    transform:translateY(-7px);
+    background:linear-gradient(180deg,#f2e2bf 0 72%,#d9bd87 73% 100%);
+    box-shadow:0 -5px 10px rgba(63,37,23,.18),inset 0 3px var(--paper-green);
+  }
+  .book-tabs-mobile a.is-active span{color:#3f3126}
+  .book-tabs-mobile a.is-active>b{border-color:#4d9e7f;color:#286b55;background:#faedcf}
+}
+
+@media(max-width:390px){
+  .paper-desk{padding-top:7px}
+  .paper-book-brand{transform:scale(.84)}
+  .book-tabs-mobile{left:4px;right:4px;padding-left:5px;padding-right:5px;gap:2px}
+  .book-tabs-mobile a{min-height:50px;padding-left:1px;padding-right:1px}
+  .book-tabs-mobile a span{font-size:6px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .book-tabs a,.book-tabs-mobile a,.book-edge-control{transition:none!important}
+}
