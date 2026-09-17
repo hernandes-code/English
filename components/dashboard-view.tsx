@@ -23,7 +23,7 @@ export function DashboardView() {
   const missionPct = Number(mission.target_sessions ?? 5) ? Number(mission.qualifying_sessions ?? 0) / Number(mission.target_sessions ?? 5) * 100 : 0;
   const sprintPct = Number(sprint.sprint_target_max ?? 25) ? Number(sprint.completed_sessions ?? 0) / Number(sprint.sprint_target_max ?? 25) * 100 : 0;
   const nextSkills = priorities.slice(0,3);
-  const focusLabel = useMemo(() => nextSkills.map((x) => x.skill_name).join(' · '), [nextSkills]);
+  const focusLabel = nextSkills.map((x) => x.skill_name).join(' · ');
 
   return <>
     <div className="dashboard-layout">

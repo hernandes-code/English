@@ -97,7 +97,18 @@ export function LearningProvider({ children }: { children: React.ReactNode }) {
   const loadSessions = useCallback(async () => {
     if (!code) throw new Error('Dashboard locked');
     if (sessionsCache.current) return sessionsCache.current;
-    const rows = await learningApi.sessions(code);
+    const rows: SessionRow[] = [];
+    const seen = new Set<number>();
+    const batchSize = 100;
+    for (let offset = 0; ; offset += batchSize) {
+      const batch = await learningApi.sessions(code, batchSize, offset);
+      for (const row of batch) {
+        if (seen.has(row.session_id)) throw new Error('Session pagination returned duplicate records. Please refresh.');
+        seen.add(row.session_id);
+        rows.push(row);
+      }
+      if (batch.length < batchSize) break;
+    }
     sessionsCache.current = rows;
     return rows;
   }, [code]);

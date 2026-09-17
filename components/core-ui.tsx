@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { createPortal } from 'react-dom';
 import { usePathname } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Icon } from './icons';
@@ -165,7 +166,7 @@ export function Dialog({ open, onClose, titleId, children, wide = false }: { ope
     return () => { document.removeEventListener('keydown', onKey); previous?.focus(); };
   }, [open, onClose]);
   if (!open) return null;
-  return <div className="dialog-backdrop" role="presentation" onMouseDown={(event) => { if (event.currentTarget === event.target) onClose(); }}><div className={`dialog ${wide ? 'dialog--wide' : ''}`} role="dialog" aria-modal="true" aria-labelledby={titleId}><button ref={closeRef} className="dialog__close" onClick={onClose} aria-label="Close dialog"><Icon name="close"/></button>{children}</div></div>;
+  return createPortal(<div className="dialog-backdrop pb-dialog-theme" role="presentation" onMouseDown={(event) => { if (event.currentTarget === event.target) onClose(); }}><div className={`dialog ${wide ? 'dialog--wide' : ''}`} role="dialog" aria-modal="true" aria-labelledby={titleId}><button ref={closeRef} className="dialog__close" onClick={onClose} aria-label="Close dialog"><Icon name="close"/></button>{children}</div></div>, document.body);
 }
 
 export function SkillDialog({ skillId, onClose }: { skillId: string | null; onClose: () => void }) {
