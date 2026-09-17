@@ -1,0 +1,11 @@
+Stage 1.1 page-stack frame mapping
+
+Source: Sprites/Paper UI Pack/Plain/1 Paper/
+27.png -> /paper-ui/page-stack/27.png (left edge)
+28.png -> /paper-ui/page-stack/28.png (top-left corner)
+29.png -> /paper-ui/page-stack/29.png (top edge)
+30.png -> /paper-ui/page-stack/30.png (top-right corner)
+31.png -> /paper-ui/page-stack/31.png (right edge)
+32.png -> /paper-ui/page-stack/32.png (bottom-left corner)
+33.png -> /paper-ui/page-stack/33.png (bottom edge)
+34.png -> /paper-ui/page-stack/34.png (bottom-right corner)
