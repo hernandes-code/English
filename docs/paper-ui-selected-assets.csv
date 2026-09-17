@@ -1,0 +1,27 @@
+role,source_path,runtime_alias,planned_use
+Desk background,Sprites/Book Desk/5.png,/paper-ui/desk-main.png,Global desktop/mobile background
+Page left edge,Sprites/Paper UI Pack/Plain/1 Paper/10.png,/paper-ui/page/edge-left.png,Book page frame
+Page corner TL,Sprites/Paper UI Pack/Plain/1 Paper/11.png,/paper-ui/page/corner-tl.png,Book page frame
+Page top edge,Sprites/Paper UI Pack/Plain/1 Paper/12.png,/paper-ui/page/edge-top.png,Book page frame
+Page corner TR,Sprites/Paper UI Pack/Plain/1 Paper/13.png,/paper-ui/page/corner-tr.png,Book page frame
+Page right edge,Sprites/Paper UI Pack/Plain/1 Paper/14.png,/paper-ui/page/edge-right.png,Book page frame
+Page corner BL,Sprites/Paper UI Pack/Plain/1 Paper/15.png,/paper-ui/page/corner-bl.png,Book page frame
+Page bottom edge,Sprites/Paper UI Pack/Plain/1 Paper/16.png,/paper-ui/page/edge-bottom.png,Book page frame
+Page corner BR,Sprites/Paper UI Pack/Plain/1 Paper/17.png,/paper-ui/page/corner-br.png,Book page frame
+Dashboard header,Sprites/Paper UI Pack/Folding & Cutout/2 Headers/1.png,/paper-ui/headers/primary.png,Dashboard and profile heading
+Data header,Sprites/Paper UI Pack/Folding & Cutout/2 Headers/4.png,/paper-ui/headers/straight.png,Next Training heading
+Player HUD,Sprites/Paper UI Pack/Folding & Cutout/6 Player HUD/1.png,/paper-ui/panels/player-hud.png,Dashboard left page and Profile
+Item holder,Sprites/Paper UI Pack/Folding & Cutout/3 Item Holder/1.png,/paper-ui/panels/item-holder.png,Skill session and priority-row reference
+Notification compact,Sprites/Paper UI Pack/Folding & Cutout/4 Notification/2.png,/paper-ui/panels/notification-compact.png,Reviews Due and compact notices
+Notification wide,Sprites/Paper UI Pack/Folding & Cutout/4 Notification/1.png,/paper-ui/panels/notification-wide.png,Session date/day callout
+Dialogue,Sprites/Paper UI Pack/Folding & Cutout/7 Dialogue Box/1.png,/paper-ui/panels/dialogue.png,Skill and session detail overlay
+Rewards large,Sprites/Paper UI Pack/Folding & Cutout/9 Rewards/1.png,/paper-ui/panels/rewards-large.png,Profile stats/rewards
+Rewards compact,Sprites/Paper UI Pack/Folding & Cutout/9 Rewards/2.png,/paper-ui/panels/rewards-compact.png,Daily Five
+Calendar,Sprites/Paper UI Pack/Folding & Cutout/10 Calander/1.png,/paper-ui/panels/calendar.png,Sessions optional calendar navigation
+Plain analytics header,Sprites/Paper UI Pack/Plain/2 Headers/4.png,/paper-ui/headers/analytics.png,Analytics title
+Plain data large,Sprites/Paper UI Pack/Plain/9 Rewards/1.png,/paper-ui/panels/plain-large.png,Analytics large panel visual language
+Coin icon,Sprites/Content/2 Icons/21.png,/paper-ui/icons/coins.png,Coins counters
+Book icon A,Sprites/Content/2 Icons/23.png,/paper-ui/icons/book-a.png,Learning identity
+Book icon B,Sprites/Content/2 Icons/24.png,/paper-ui/icons/book-b.png,Learning identity alternative
+Check icon,Sprites/Content/2 Icons/10.png,/paper-ui/icons/check.png,Daily Five and completion
+Stamp mark,Sprites/Content/9 Stamp/Stamp Mark/1.png,/paper-ui/icons/stamp-mark.png,Completed/review marking
