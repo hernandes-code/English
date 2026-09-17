@@ -17,7 +17,11 @@ export function ProfileView(){
     <div className="profile-grid">
       <Panel className="profile-hero" elevated>
         <div className="character-stage" aria-hidden="true">
-          <img src="/game-v2/profile-stage.png" alt="" className="character-stage__scene"/>
+          <div className="character-stage__sky"/>
+          <div className="character-stage__ground"/>
+          <img src="/game/tree-2.png" alt="" className="character-stage__tree character-stage__tree--left"/>
+          <img src="/game/tree-1.png" alt="" className="character-stage__tree character-stage__tree--right"/>
+          <img src="/game/castle.png" alt="" className="character-stage__castle"/>
           <div className="character-stage__avatar"><PixelAvatar size="lg"/></div>
         </div>
         <Eyebrow>BUSINESS ENGLISH PLAYER</Eyebrow>
