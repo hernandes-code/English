@@ -1,0 +1,54 @@
+role,source_path,native_size,alpha_bbox,runtime_alias,scaling_rule,stage
+Desk background,Sprites/Book Desk/5.png,768x560,768x560+0+0,/paper-ui/desk-main.png,cover without aspect distortion,1
+Page left edge,Sprites/Paper UI Pack/Plain/1 Paper/10.png,32x32,32x1+0+15,/paper-ui/page/edge-left.png,repeat-y or border-image slice,1
+Page corner TL,Sprites/Paper UI Pack/Plain/1 Paper/11.png,32x32,alpha partial,/paper-ui/page/corner-tl.png,native-ratio corner piece,1
+Page top edge,Sprites/Paper UI Pack/Plain/1 Paper/12.png,32x32,32x1+0+15,/paper-ui/page/edge-top.png,repeat-x or border-image slice,1
+Page corner TR,Sprites/Paper UI Pack/Plain/1 Paper/13.png,32x32,alpha partial,/paper-ui/page/corner-tr.png,native-ratio corner piece,1
+Page right edge,Sprites/Paper UI Pack/Plain/1 Paper/14.png,32x32,32x1+0+15,/paper-ui/page/edge-right.png,repeat-y or border-image slice,1
+Page corner BL,Sprites/Paper UI Pack/Plain/1 Paper/15.png,32x32,alpha partial,/paper-ui/page/corner-bl.png,native-ratio corner piece,1
+Page bottom edge,Sprites/Paper UI Pack/Plain/1 Paper/16.png,32x32,32x1+0+15,/paper-ui/page/edge-bottom.png,repeat-x or border-image slice,1
+Page corner BR,Sprites/Paper UI Pack/Plain/1 Paper/17.png,32x32,alpha partial,/paper-ui/page/corner-br.png,native-ratio corner piece,1
+Dashboard tab,Sprites/Content/10 Banners & Headers/Cutout/9.png,64x64,62x62+0+2,/paper-ui/tabs/dashboard.png,native ratio no stretching,1
+Skills tab,Sprites/Content/10 Banners & Headers/Cutout/12.png,64x64,60x64+2+0,/paper-ui/tabs/skills.png,native ratio no stretching,1
+Sessions tab,Sprites/Content/10 Banners & Headers/Cutout/13.png,64x64,62x64+2+0,/paper-ui/tabs/sessions.png,native ratio no stretching,1
+Analytics tab,Sprites/Content/10 Banners & Headers/Cutout/15.png,64x64,62x62+0+2,/paper-ui/tabs/analytics.png,native ratio no stretching,1
+Profile tab,Sprites/Content/10 Banners & Headers/Cutout/18.png,64x64,62x62+0+2,/paper-ui/tabs/profile.png,native ratio no stretching,1
+Next button left cap,Sprites/Content/4 Buttons/Sliced/16.png,32x32,32x21+0+5,/paper-ui/buttons/next-left.png,assemble horizontally,1
+Next button middle,Sprites/Content/4 Buttons/Sliced/17.png,32x32,32x21+0+5,/paper-ui/buttons/next-mid.png,repeat-x center,1
+Next button right cap,Sprites/Content/4 Buttons/Sliced/18.png,32x32,32x21+0+5,/paper-ui/buttons/next-right.png,assemble horizontally,1
+Next button active left,Sprites/Content/4 Buttons/Sliced/19.png,32x32,32x21+0+6,/paper-ui/buttons/next-active-left.png,assemble horizontally,1
+Next button active middle,Sprites/Content/4 Buttons/Sliced/20.png,32x32,32x21+0+6,/paper-ui/buttons/next-active-mid.png,repeat-x center,1
+Next button active right,Sprites/Content/4 Buttons/Sliced/21.png,32x32,32x21+0+6,/paper-ui/buttons/next-active-right.png,assemble horizontally,1
+Previous button left cap,Sprites/Content/4 Buttons/Sliced/28.png,32x32,32x21+0+5,/paper-ui/buttons/prev-left.png,assemble horizontally,1
+Previous button middle,Sprites/Content/4 Buttons/Sliced/29.png,32x32,32x21+0+5,/paper-ui/buttons/prev-mid.png,repeat-x center,1
+Previous button right cap,Sprites/Content/4 Buttons/Sliced/30.png,32x32,32x21+0+5,/paper-ui/buttons/prev-right.png,assemble horizontally,1
+Previous button active left,Sprites/Content/4 Buttons/Sliced/31.png,32x32,32x21+0+6,/paper-ui/buttons/prev-active-left.png,assemble horizontally,1
+Previous button active middle,Sprites/Content/4 Buttons/Sliced/32.png,32x32,32x21+0+6,/paper-ui/buttons/prev-active-mid.png,repeat-x center,1
+Previous button active right,Sprites/Content/4 Buttons/Sliced/33.png,32x32,32x21+0+6,/paper-ui/buttons/prev-active-right.png,assemble horizontally,1
+Dashboard header,Sprites/Paper UI Pack/Folding & Cutout/2 Headers/1.png,608x176,576x144+16+16,/paper-ui/headers/primary.png,preserve native ratio; content overlays inside safe area,2
+Next Training header,Sprites/Paper UI Pack/Folding & Cutout/2 Headers/4.png,448x112,416x71+16+25,/paper-ui/headers/straight.png,preserve native ratio; content overlays inside safe area,2
+Player HUD,Sprites/Paper UI Pack/Folding & Cutout/6 Player HUD/1.png,288x160,233x119+27+20,/paper-ui/panels/player-hud.png,preserve native ratio; do not stretch vertically,2
+Item holder,Sprites/Paper UI Pack/Folding & Cutout/3 Item Holder/1.png,592x144,563x111+14+16,/paper-ui/panels/item-holder.png,use as reference/frame; preserve ratio if direct image,2
+Notification compact,Sprites/Paper UI Pack/Folding & Cutout/4 Notification/2.png,336x96,295x68+19+17,/paper-ui/panels/notification-compact.png,preserve ratio,2
+Notification wide,Sprites/Paper UI Pack/Folding & Cutout/4 Notification/1.png,288x80,251x62+21+8,/paper-ui/panels/notification-wide.png,preserve ratio,4
+Dialogue,Sprites/Paper UI Pack/Folding & Cutout/7 Dialogue Box/1.png,688x224,633x187+27+18,/paper-ui/panels/dialogue.png,preserve ratio; responsive max-width only,3
+Rewards large,Sprites/Paper UI Pack/Folding & Cutout/9 Rewards/1.png,416x208,391x175+12+16,/paper-ui/panels/rewards-large.png,preserve ratio,5
+Rewards compact,Sprites/Paper UI Pack/Folding & Cutout/9 Rewards/2.png,416x144,389x111+13+16,/paper-ui/panels/rewards-compact.png,preserve ratio,2
+Calendar,Sprites/Paper UI Pack/Folding & Cutout/10 Calander/1.png,656x544,621x503+17+28,/paper-ui/panels/calendar.png,preserve ratio; optional sessions view,4
+Analytics header,Sprites/Paper UI Pack/Plain/2 Headers/4.png,448x128,416x71+16+25,/paper-ui/headers/analytics.png,preserve ratio,5
+Analytics panel,Sprites/Paper UI Pack/Plain/9 Rewards/1.png,416x208,391x175+12+16,/paper-ui/panels/plain-large.png,preserve ratio or replicate language in CSS,5
+Coin icon,Sprites/Content/2 Icons/21.png,64x32,51x29+7+2,/paper-ui/icons/coins.png,preserve ratio,2
+Book icon A,Sprites/Content/2 Icons/23.png,64x80,64x80+0+0,/paper-ui/icons/book-a.png,preserve ratio,2
+Book icon B,Sprites/Content/2 Icons/24.png,64x80,64x80+0+0,/paper-ui/icons/book-b.png,preserve ratio,2
+Check icon,Sprites/Content/2 Icons/10.png,16x16,10x7+3+5,/paper-ui/icons/check.png,use native/pixel multiples,2
+Stamp mark,Sprites/Content/9 Stamp/Stamp Mark/1.png,32x32,30x30+1+1,/paper-ui/icons/stamp-mark.png,use native/pixel multiples,4
+Green progress left,Sprites/Content/3 Progress Bars/10.png,16x16,12x4+2+6,/paper-ui/progress/green-left.png,assemble sliced bar,2
+Green progress middle,Sprites/Content/3 Progress Bars/11.png,16x16,15x4+1+6,/paper-ui/progress/green-mid.png,repeat-x center,2
+Green progress right,Sprites/Content/3 Progress Bars/12.png,16x16,9x4+4+6,/paper-ui/progress/green-right.png,assemble sliced bar,2
+Teal progress left,Sprites/Content/3 Progress Bars/13.png,16x16,12x4+2+6,/paper-ui/progress/teal-left.png,assemble sliced bar,2
+Teal progress middle,Sprites/Content/3 Progress Bars/14.png,16x16,15x4+1+6,/paper-ui/progress/teal-mid.png,repeat-x center,2
+Teal progress right,Sprites/Content/3 Progress Bars/15.png,16x16,9x4+4+6,/paper-ui/progress/teal-right.png,assemble sliced bar,2
+Holder primary,Sprites/Content/5 Holders/5.png,32x32,32x32+0+0,/paper-ui/holders/primary.png,native/pixel multiples,2
+Holder alternate,Sprites/Content/5 Holders/25.png,32x32,32x32+0+0,/paper-ui/holders/alternate.png,native/pixel multiples,3
+Review highlighter,Sprites/Content/6 Highlighter/5.png,16x16,10x10+3+3,/paper-ui/highlighter/review.png,native/pixel multiples,3
+Review highlighter alt,Sprites/Content/6 Highlighter/6.png,16x16,14x14+1+1,/paper-ui/highlighter/review-alt.png,native/pixel multiples,3
