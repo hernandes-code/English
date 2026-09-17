@@ -1,5 +1,5 @@
 /* English Level Up — Journey Map V2
-   Scope: journey map only. One composed scene, one coordinate system. */
+   Scope: journey map only. Anchored assets, one coordinate system, no clipped scene image. */
 
 .journey-world{
   position:relative;
@@ -56,19 +56,66 @@
   filter:drop-shadow(0 2px 0 rgba(0,0,0,.62));
 }
 
-.journey-world__art{
+.journey-landmark{
   position:absolute;
-  inset:0;
   z-index:2;
-  display:block;
-  width:100%;
-  height:100%;
-  object-fit:contain;
-  object-position:center;
-  image-rendering:pixelated;
+  width:16%;
+  height:24%;
+  transform:translate(-50%,-50%);
   pointer-events:none;
+}
+
+.journey-landmark__ground{
+  position:absolute;
+  left:6%;
+  right:6%;
+  bottom:2%;
+  height:48%;
+  border-radius:48% 46% 40% 42%/38% 38% 46% 48%;
+  background:linear-gradient(180deg,#4f9b63 0 47%,#3b7f53 48% 60%,#75563c 61% 82%,#4a3727 83% 100%);
+  box-shadow:0 6px 0 rgba(49,35,24,.52),0 12px 18px rgba(0,0,0,.20),inset 0 3px rgba(151,228,153,.10);
+}
+
+.journey-landmark__building,
+.journey-landmark__tree{
+  position:absolute;
+  display:block;
+  object-fit:contain;
+  image-rendering:pixelated;
   user-select:none;
-  filter:drop-shadow(0 9px 7px rgba(0,0,0,.18));
+  filter:drop-shadow(0 4px 3px rgba(0,0,0,.30));
+}
+
+.journey-landmark__building{
+  left:50%;
+  bottom:22%;
+  width:52%;
+  height:70%;
+  transform:translateX(-50%);
+}
+
+.journey-landmark__tree{
+  bottom:27%;
+  width:23%;
+  height:54%;
+}
+
+.journey-landmark__tree--left{left:9%}
+.journey-landmark__tree--right{right:8%}
+
+.journey-landmark--featured{
+  width:18%;
+  height:27%;
+}
+
+.journey-landmark--featured .journey-landmark__building{
+  width:57%;
+  height:76%;
+}
+
+.journey-landmark--muted{
+  opacity:.52;
+  filter:saturate(.72);
 }
 
 .journey-marker{
@@ -103,7 +150,6 @@
   box-shadow:0 3px 9px rgba(0,0,0,.22);
   white-space:nowrap;
   font:800 8px ui-monospace,SFMono-Regular,Menlo,monospace;
-  letter-spacing:.01em;
 }
 
 .journey-marker--done b{
@@ -124,14 +170,12 @@
   color:#ffe8ac;
 }
 
-.journey-marker--locked{
-  opacity:.46;
-}
+.journey-marker--locked{opacity:.46}
 
 .journey-world__avatar{
   position:absolute;
   z-index:5;
-  transform:translate(-50%,-83%);
+  transform:translate(-50%,-84%);
   pointer-events:none;
 }
 
@@ -139,7 +183,8 @@
   filter:drop-shadow(0 6px 4px rgba(0,0,0,.48));
 }
 
-/* Retire the old generated-island layer when this map is active. */
+/* Disable obsolete scene layers from the first pass. */
+.journey-world__art,
 .world-island,
 .world-sprite,
 .world-island__top{
@@ -152,40 +197,31 @@
 }
 
 @media (max-width:980px){
-  .journey-world{
-    overflow-x:auto;
-    overflow-y:hidden;
-    -webkit-overflow-scrolling:touch;
-    scrollbar-width:thin;
-    scrollbar-color:#31556d #081b27;
-  }
+  .journey-world{overflow:hidden}
   .journey-world__canvas{
-    width:760px;
-    min-width:760px;
-    height:330px;
-    min-height:330px;
-    aspect-ratio:auto;
+    width:100%;
+    min-width:0;
+    min-height:270px;
+    aspect-ratio:1200/560;
   }
+  .journey-marker span{display:none}
+  .journey-marker b{width:30px;height:30px;font-size:10px}
+  .journey-landmark{width:18%;height:26%}
+  .journey-landmark--featured{width:20%;height:29%}
+  .journey-landmark__tree{width:21%}
 }
 
 @media (max-width:540px){
   .journey-world__canvas{
-    width:720px;
-    min-width:720px;
-    height:312px;
-    min-height:312px;
+    min-height:250px;
+    aspect-ratio:1.82/1;
   }
-  .journey-marker b{
-    width:30px;
-    height:30px;
-    font-size:10px;
-  }
-  .journey-marker span{
-    padding:3px 6px;
-    font-size:7px;
-  }
-  .journey-world__avatar .pixel-avatar--sm{
-    width:44px;
-    height:50px;
-  }
+  .journey-marker b{width:27px;height:27px;font-size:9px;border-radius:7px}
+  .journey-landmark{width:20%;height:25%}
+  .journey-landmark--featured{width:22%;height:28%}
+  .journey-landmark__tree{display:none}
+  .journey-landmark__building{width:58%;height:72%}
+  .journey-landmark--featured .journey-landmark__building{width:62%;height:77%}
+  .journey-world__route path{stroke-width:4;stroke-dasharray:9 11}
+  .journey-world__avatar .pixel-avatar--sm{width:42px;height:48px}
 }
