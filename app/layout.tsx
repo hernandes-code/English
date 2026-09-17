@@ -3,6 +3,7 @@ import './globals.css';
 import './paper-book.css';
 import './paper-book-polish.css';
 import './paper-book-stability.css';
+import './paper-book-motion.css';
 import { LearningProvider } from '@/components/learning-provider';
 import { PaperBookShell } from '@/components/paper-book-shell';
 
