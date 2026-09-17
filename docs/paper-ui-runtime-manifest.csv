@@ -8,6 +8,14 @@ Page right edge,Sprites/Paper UI Pack/Plain/1 Paper/14.png,32x32,32x1+0+15,/pape
 Page corner BL,Sprites/Paper UI Pack/Plain/1 Paper/15.png,32x32,alpha partial,/paper-ui/page/corner-bl.png,native-ratio corner piece,1
 Page bottom edge,Sprites/Paper UI Pack/Plain/1 Paper/16.png,32x32,32x1+0+15,/paper-ui/page/edge-bottom.png,repeat-x or border-image slice,1
 Page corner BR,Sprites/Paper UI Pack/Plain/1 Paper/17.png,32x32,alpha partial,/paper-ui/page/corner-br.png,native-ratio corner piece,1
+Page stack left edge,Sprites/Paper UI Pack/Plain/1 Paper/27.png,32x32,1x32+6+0,/paper-ui/page-stack/27.png,repeat-y behind active page,1.1
+Page stack corner TL,Sprites/Paper UI Pack/Plain/1 Paper/28.png,32x32,26x26+6+6,/paper-ui/page-stack/28.png,native-ratio corner piece behind page,1.1
+Page stack top edge,Sprites/Paper UI Pack/Plain/1 Paper/29.png,32x32,32x1+0+6,/paper-ui/page-stack/29.png,repeat-x behind active page,1.1
+Page stack corner TR,Sprites/Paper UI Pack/Plain/1 Paper/30.png,32x32,26x26+0+6,/paper-ui/page-stack/30.png,native-ratio corner piece behind page,1.1
+Page stack right edge,Sprites/Paper UI Pack/Plain/1 Paper/31.png,32x32,1x32+25+0,/paper-ui/page-stack/31.png,repeat-y behind active page,1.1
+Page stack corner BL,Sprites/Paper UI Pack/Plain/1 Paper/32.png,32x32,26x26+0+0,/paper-ui/page-stack/32.png,native-ratio corner piece behind page,1.1
+Page stack bottom edge,Sprites/Paper UI Pack/Plain/1 Paper/33.png,32x32,32x1+0+25,/paper-ui/page-stack/33.png,repeat-x behind active page,1.1
+Page stack corner BR,Sprites/Paper UI Pack/Plain/1 Paper/34.png,32x32,26x26+6+0,/paper-ui/page-stack/34.png,native-ratio corner piece behind page,1.1
 Dashboard tab,Sprites/Content/10 Banners & Headers/Cutout/9.png,64x64,62x62+0+2,/paper-ui/tabs/dashboard.png,native ratio no stretching,1
 Skills tab,Sprites/Content/10 Banners & Headers/Cutout/12.png,64x64,60x64+2+0,/paper-ui/tabs/skills.png,native ratio no stretching,1
 Sessions tab,Sprites/Content/10 Banners & Headers/Cutout/13.png,64x64,62x64+2+0,/paper-ui/tabs/sessions.png,native ratio no stretching,1
