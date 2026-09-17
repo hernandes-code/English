@@ -1,0 +1,191 @@
+/* English Level Up — Journey Map V2
+   Scope: journey map only. One composed scene, one coordinate system. */
+
+.journey-world{
+  position:relative;
+  width:100%;
+  min-height:0;
+  overflow:hidden;
+  border:1px solid #31556d;
+  border-radius:14px;
+  background:#0b2937;
+  box-shadow:inset 0 0 0 4px rgba(2,12,18,.18),0 12px 28px rgba(0,0,0,.12);
+}
+
+.journey-world__canvas{
+  position:relative;
+  width:100%;
+  aspect-ratio:1200/520;
+  min-height:330px;
+  isolation:isolate;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 22% 18%,rgba(121,223,224,.11),transparent 28%),
+    radial-gradient(circle at 78% 12%,rgba(83,177,201,.10),transparent 25%),
+    linear-gradient(180deg,#123946 0%,#0d303d 58%,#092631 100%);
+}
+
+.journey-world__water{
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  background:
+    linear-gradient(135deg,rgba(255,255,255,.024) 25%,transparent 25%) 0 0/28px 28px,
+    linear-gradient(315deg,rgba(255,255,255,.014) 25%,transparent 25%) 0 0/28px 28px;
+  opacity:.7;
+}
+
+.journey-world__route{
+  position:absolute;
+  inset:0;
+  z-index:1;
+  width:100%;
+  height:100%;
+  overflow:visible;
+  pointer-events:none;
+}
+
+.journey-world__route path{
+  fill:none;
+  stroke:#ffe99a;
+  stroke-width:5;
+  stroke-linecap:round;
+  stroke-dasharray:12 14;
+  opacity:.88;
+  filter:drop-shadow(0 2px 0 rgba(0,0,0,.62));
+}
+
+.journey-world__art{
+  position:absolute;
+  inset:0;
+  z-index:2;
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  object-position:center;
+  image-rendering:pixelated;
+  pointer-events:none;
+  user-select:none;
+  filter:drop-shadow(0 9px 7px rgba(0,0,0,.18));
+}
+
+.journey-marker{
+  position:absolute;
+  z-index:4;
+  transform:translate(-50%,-50%);
+  display:grid;
+  justify-items:center;
+  pointer-events:none;
+}
+
+.journey-marker b{
+  width:34px;
+  height:34px;
+  display:grid;
+  place-items:center;
+  border:2px solid #a87d36;
+  border-radius:8px;
+  background:linear-gradient(180deg,#1b3545,#0a202d);
+  color:#fff1bf;
+  box-shadow:0 4px 0 #3e2d19,0 7px 15px rgba(0,0,0,.26);
+  font:900 11px ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+
+.journey-marker span{
+  margin-top:5px;
+  padding:4px 7px;
+  border:1px solid #31556b;
+  border-radius:6px;
+  background:rgba(4,17,25,.94);
+  color:#dcebf2;
+  box-shadow:0 3px 9px rgba(0,0,0,.22);
+  white-space:nowrap;
+  font:800 8px ui-monospace,SFMono-Regular,Menlo,monospace;
+  letter-spacing:.01em;
+}
+
+.journey-marker--done b{
+  border-color:#cda957;
+  background:linear-gradient(180deg,#35483a,#17291f);
+  color:#ffe6a1;
+}
+
+.journey-marker--current b{
+  border-color:#72dfba;
+  background:linear-gradient(180deg,#17493e,#0d2f29);
+  color:#c8fae9;
+  box-shadow:0 0 0 3px rgba(110,224,187,.12),0 4px 0 #224b3d,0 8px 16px rgba(0,0,0,.28);
+}
+
+.journey-marker--next b{
+  border-color:#e0b557;
+  color:#ffe8ac;
+}
+
+.journey-marker--locked{
+  opacity:.46;
+}
+
+.journey-world__avatar{
+  position:absolute;
+  z-index:5;
+  transform:translate(-50%,-83%);
+  pointer-events:none;
+}
+
+.journey-world__avatar .pixel-avatar{
+  filter:drop-shadow(0 6px 4px rgba(0,0,0,.48));
+}
+
+/* Retire the old generated-island layer when this map is active. */
+.world-island,
+.world-sprite,
+.world-island__top{
+  display:none!important;
+}
+
+@media (max-width:1200px){
+  .journey-world__canvas{min-height:300px}
+  .journey-marker span{font-size:7px}
+}
+
+@media (max-width:980px){
+  .journey-world{
+    overflow-x:auto;
+    overflow-y:hidden;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:thin;
+    scrollbar-color:#31556d #081b27;
+  }
+  .journey-world__canvas{
+    width:760px;
+    min-width:760px;
+    height:330px;
+    min-height:330px;
+    aspect-ratio:auto;
+  }
+}
+
+@media (max-width:540px){
+  .journey-world__canvas{
+    width:720px;
+    min-width:720px;
+    height:312px;
+    min-height:312px;
+  }
+  .journey-marker b{
+    width:30px;
+    height:30px;
+    font-size:10px;
+  }
+  .journey-marker span{
+    padding:3px 6px;
+    font-size:7px;
+  }
+  .journey-world__avatar .pixel-avatar--sm{
+    width:44px;
+    height:50px;
+  }
+}
