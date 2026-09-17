@@ -1,5 +1,5 @@
 /* English Level Up — Journey Map V2
-   Scope: journey map only. Responsive coordinates + undistorted sprites. */
+   Scope: journey map only. Anchored assets, one coordinate system, no clipped scene image. */
 
 .journey-world{
   position:relative;
@@ -58,22 +58,19 @@
 
 .journey-landmark{
   position:absolute;
-  left:var(--journey-x);
-  top:var(--journey-y);
   z-index:2;
   width:16%;
-  aspect-ratio:1.05/1;
+  height:24%;
   transform:translate(-50%,-50%);
   pointer-events:none;
 }
 
 .journey-landmark__ground{
   position:absolute;
-  left:50%;
-  bottom:0;
-  width:84%;
-  height:42%;
-  transform:translateX(-50%);
+  left:6%;
+  right:6%;
+  bottom:2%;
+  height:48%;
   border-radius:48% 46% 40% 42%/38% 38% 46% 48%;
   background:linear-gradient(180deg,#4f9b63 0 47%,#3b7f53 48% 60%,#75563c 61% 82%,#4a3727 83% 100%);
   box-shadow:0 6px 0 rgba(49,35,24,.52),0 12px 18px rgba(0,0,0,.20),inset 0 3px rgba(151,228,153,.10);
@@ -83,7 +80,7 @@
 .journey-landmark__tree{
   position:absolute;
   display:block;
-  height:auto;
+  object-fit:contain;
   image-rendering:pixelated;
   user-select:none;
   filter:drop-shadow(0 4px 3px rgba(0,0,0,.30));
@@ -91,27 +88,38 @@
 
 .journey-landmark__building{
   left:50%;
-  bottom:29%;
+  bottom:22%;
+  width:52%;
+  height:70%;
   transform:translateX(-50%);
 }
 
-.journey-landmark--house .journey-landmark__building{width:48%}
-.journey-landmark--barracks .journey-landmark__building{width:68%}
-.journey-landmark--castle .journey-landmark__building{width:88%}
-.journey-landmark--monastery .journey-landmark__building{width:66%}
-.journey-landmark--tower .journey-landmark__building{width:46%}
+.journey-landmark__tree{
+  bottom:27%;
+  width:23%;
+  height:54%;
+}
 
-.journey-landmark__tree{bottom:31%;width:23%}
-.journey-landmark__tree--left{left:7%}
-.journey-landmark__tree--right{right:7%}
+.journey-landmark__tree--left{left:9%}
+.journey-landmark__tree--right{right:8%}
 
-.journey-landmark--featured{width:18%}
-.journey-landmark--muted{opacity:.52;filter:saturate(.72)}
+.journey-landmark--featured{
+  width:18%;
+  height:27%;
+}
+
+.journey-landmark--featured .journey-landmark__building{
+  width:57%;
+  height:76%;
+}
+
+.journey-landmark--muted{
+  opacity:.52;
+  filter:saturate(.72);
+}
 
 .journey-marker{
   position:absolute;
-  left:var(--journey-x);
-  top:var(--journey-y);
   z-index:4;
   transform:translate(-50%,-50%);
   display:grid;
@@ -144,26 +152,44 @@
   font:800 8px ui-monospace,SFMono-Regular,Menlo,monospace;
 }
 
-.journey-marker--done b{border-color:#cda957;background:linear-gradient(180deg,#35483a,#17291f);color:#ffe6a1}
-.journey-marker--current b{border-color:#72dfba;background:linear-gradient(180deg,#17493e,#0d2f29);color:#c8fae9;box-shadow:0 0 0 3px rgba(110,224,187,.12),0 4px 0 #224b3d,0 8px 16px rgba(0,0,0,.28)}
-.journey-marker--next b{border-color:#e0b557;color:#ffe8ac}
+.journey-marker--done b{
+  border-color:#cda957;
+  background:linear-gradient(180deg,#35483a,#17291f);
+  color:#ffe6a1;
+}
+
+.journey-marker--current b{
+  border-color:#72dfba;
+  background:linear-gradient(180deg,#17493e,#0d2f29);
+  color:#c8fae9;
+  box-shadow:0 0 0 3px rgba(110,224,187,.12),0 4px 0 #224b3d,0 8px 16px rgba(0,0,0,.28);
+}
+
+.journey-marker--next b{
+  border-color:#e0b557;
+  color:#ffe8ac;
+}
+
 .journey-marker--locked{opacity:.46}
 
 .journey-world__avatar{
   position:absolute;
-  left:var(--journey-x);
-  top:var(--journey-y);
   z-index:5;
   transform:translate(-50%,-84%);
   pointer-events:none;
 }
 
-.journey-world__avatar .pixel-avatar{filter:drop-shadow(0 6px 4px rgba(0,0,0,.48))}
+.journey-world__avatar .pixel-avatar{
+  filter:drop-shadow(0 6px 4px rgba(0,0,0,.48));
+}
 
+/* Disable obsolete scene layers from the first pass. */
 .journey-world__art,
 .world-island,
 .world-sprite,
-.world-island__top{display:none!important}
+.world-island__top{
+  display:none!important;
+}
 
 @media (max-width:1200px){
   .journey-world__canvas{min-height:300px}
@@ -172,46 +198,45 @@
 
 @media (max-width:980px){
   .journey-world{overflow:hidden}
-  .journey-world__canvas{width:100%;min-width:0;min-height:300px;aspect-ratio:1200/560}
-  .journey-landmark,
-  .journey-marker,
-  .journey-world__avatar{left:var(--journey-mobile-x);top:var(--journey-mobile-y)}
+  .journey-world__canvas{
+    width:100%;
+    min-width:0;
+    min-height:270px;
+    aspect-ratio:1200/560;
+  }
   .journey-marker span{display:none}
   .journey-marker b{width:30px;height:30px;font-size:10px}
-  .journey-landmark{width:15.5%}
-  .journey-landmark--featured{width:17%}
-  .journey-landmark__tree{width:20%}
+  .journey-landmark{width:18%;height:26%}
+  .journey-landmark--featured{width:20%;height:29%}
+  .journey-landmark__tree{width:21%}
 }
 
 @media (max-width:540px){
   .journey-world__canvas{
-    height:330px;
-    min-height:330px;
-    aspect-ratio:auto;
+    min-height:276px;
+    aspect-ratio:1.72/1;
   }
-  .journey-landmark{
-    width:76px;
-    height:92px;
-    aspect-ratio:auto;
+
+  /* Keep the full world composition inside the mobile viewport instead of
+     clipping the lower landmarks against the rounded container edge. */
+  .journey-world__route{
+    transform:translateY(-26px);
   }
-  .journey-landmark--featured{
-    width:88px;
-    height:98px;
+  .journey-landmark,
+  .journey-marker,
+  .journey-world__avatar{
+    margin-top:-26px;
   }
-  .journey-landmark__ground{
-    width:72px;
-    height:34px;
-  }
-  .journey-landmark--featured .journey-landmark__ground{width:82px;height:36px}
-  .journey-landmark__tree{display:none}
-  .journey-landmark__building{bottom:30px}
-  .journey-landmark--house .journey-landmark__building{width:43px}
-  .journey-landmark--barracks .journey-landmark__building{width:62px}
-  .journey-landmark--castle .journey-landmark__building{width:82px}
-  .journey-landmark--monastery .journey-landmark__building{width:62px}
-  .journey-landmark--tower .journey-landmark__building{width:42px}
+
   .journey-marker b{width:27px;height:27px;font-size:9px;border-radius:7px}
+  .journey-landmark{width:17%;height:22%}
+  .journey-landmark--featured{width:19%;height:25%}
+  .journey-landmark--edge-left{transform:translate(-38%,-50%)}
+  .journey-landmark--edge-right{width:14%;transform:translate(-68%,-50%)}
+  .journey-landmark__tree{display:none}
+  .journey-landmark__building{width:54%;height:68%}
+  .journey-landmark--featured .journey-landmark__building{width:58%;height:72%}
   .journey-world__route path{stroke-width:4;stroke-dasharray:9 11}
-  .journey-world__avatar{transform:translate(-50%,-76%)}
-  .journey-world__avatar .pixel-avatar--sm{width:40px;height:46px}
+  .journey-world__avatar{transform:translate(-50%,-79%)}
+  .journey-world__avatar .pixel-avatar--sm{width:38px;height:44px}
 }
