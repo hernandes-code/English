@@ -1,0 +1,119 @@
+/* Stage 1.2 — structural stability. Keeps the book fixed while chapter content changes. */
+
+.paper-app-shell{
+  height:100dvh;
+  min-height:0;
+  overflow:hidden;
+}
+
+.paper-desk{
+  box-sizing:border-box;
+  height:100dvh;
+  min-height:0;
+  justify-content:flex-start;
+  padding-top:14px;
+  padding-bottom:16px;
+  overflow:hidden;
+}
+
+.paper-book-brand{
+  flex:0 0 auto;
+  margin-bottom:10px;
+}
+
+.book-stage{
+  box-sizing:border-box;
+  flex:1 1 auto;
+  min-height:0;
+  width:min(1420px,calc(100vw - 88px));
+  padding-right:132px;
+}
+
+.book-spread{
+  height:min(760px,calc(100dvh - 104px));
+  min-height:0;
+  max-height:none;
+  animation:none!important;
+}
+
+.book-page{
+  height:100%;
+  min-height:0;
+}
+
+.book-page__content{
+  box-sizing:border-box;
+  height:100%;
+  min-height:0;
+}
+
+/* Keep the chapter rail in a predictable zone so it never collides with the forward control. */
+.book-tabs{
+  top:32px;
+  z-index:6;
+}
+
+/* Both controls remain physically tucked under the book, but the forward control now has a guaranteed exposed area. */
+.book-edge-control{
+  z-index:3;
+}
+.book-edge-control--previous{left:-72px}
+.book-edge-control--next{right:36px}
+
+/* Prevent navigation affordances from creating horizontal page scroll. */
+.paper-app-shell,
+.paper-desk,
+.book-stage{
+  max-width:100%;
+}
+
+@media(max-width:980px) and (min-width:721px){
+  .paper-desk{padding-left:26px;padding-right:26px}
+  .book-stage{
+    width:min(1100px,calc(100vw - 52px));
+    padding-right:106px;
+  }
+  .book-tabs{width:96px;top:28px}
+  .book-edge-control--previous{left:-58px}
+  .book-edge-control--next{right:24px}
+  .book-spread{height:min(700px,calc(100dvh - 100px))}
+}
+
+@media(max-width:720px){
+  .paper-app-shell{
+    height:auto;
+    min-height:100dvh;
+    overflow:visible;
+  }
+  .paper-desk{
+    height:auto;
+    min-height:100dvh;
+    overflow:visible;
+  }
+  .book-stage{
+    flex:none;
+    width:100%;
+    max-width:560px;
+    padding:0;
+  }
+  .book-spread{
+    height:auto;
+    min-height:calc(100dvh - 185px);
+    max-height:none;
+    animation:none!important;
+  }
+  .book-page{
+    height:auto;
+    min-height:calc(100dvh - 185px);
+  }
+  .book-page__content{
+    height:auto;
+    min-height:calc(100dvh - 185px);
+  }
+  .book-edge-control--previous{left:3px}
+  .book-edge-control--next{right:3px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .book-spread{animation:none!important}
+}
