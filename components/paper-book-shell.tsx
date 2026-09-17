@@ -30,6 +30,7 @@ export function PaperBookShell({ children: _children }: { children: React.ReactN
   return (
     <main className="paper-app-shell">
       <div className="paper-desk" aria-label="English Level Up learning journal">
+        <div className="paper-desk__shade" aria-hidden="true" />
         <header className="paper-book-brand" aria-label="English Level Up">
           <span>ENGLISH</span>
           <strong>LEVEL UP</strong>
@@ -40,6 +41,9 @@ export function PaperBookShell({ children: _children }: { children: React.ReactN
           <EdgeControl direction="previous" href={previous?.href} label={previous ? `Previous: ${previous.label}` : 'First chapter'} />
 
           <div className="book-spread" key={pathname}>
+            <PaperStackFrame side="left" />
+            <PaperStackFrame side="right" />
+
             <PaperPage className="book-page--left">
               <div className="book-page__chapter-no">CHAPTER {chapter.number}</div>
               <div className="book-page__hero">
@@ -112,6 +116,21 @@ function PaperPage({ children, className = '' }: { children: React.ReactNode; cl
       <img className="paper-corner paper-corner--br" src="/paper-ui/page/17.png" alt="" draggable={false}/>
       <div className="book-page__content">{children}</div>
     </section>
+  );
+}
+
+function PaperStackFrame({ side }: { side: 'left' | 'right' }) {
+  return (
+    <div className={`book-page-stack book-page-stack--${side}`} aria-hidden="true">
+      <div className="stack-edge stack-edge--top" />
+      <div className="stack-edge stack-edge--right" />
+      <div className="stack-edge stack-edge--bottom" />
+      <div className="stack-edge stack-edge--left" />
+      <img className="stack-corner stack-corner--tl" src="/paper-ui/page-stack/28.png" alt="" />
+      <img className="stack-corner stack-corner--tr" src="/paper-ui/page-stack/30.png" alt="" />
+      <img className="stack-corner stack-corner--bl" src="/paper-ui/page-stack/32.png" alt="" />
+      <img className="stack-corner stack-corner--br" src="/paper-ui/page-stack/34.png" alt="" />
+    </div>
   );
 }
 
