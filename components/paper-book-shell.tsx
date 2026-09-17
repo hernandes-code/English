@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
 import { AccessGate } from './core-ui';
 import { useLearning } from './learning-provider';
 
@@ -13,23 +14,91 @@ const chapters = [
   { href: '/profile', label: 'Profile', number: '05', title: 'Player Status', note: 'Level, XP, rewards, and learning profile.' },
 ] as const;
 
+type TurnDirection = 'forward' | 'backward';
+type TurnState = { from: number; to: number; direction: TurnDirection };
+
 export function PaperBookShell({ children: _children }: { children: React.ReactNode }) {
   const { dashboard, status } = useLearning();
   const pathname = usePathname();
+  const router = useRouter();
+  const routeIndex = Math.max(0, chapters.findIndex((chapter) => chapter.href === pathname));
+  const [visualIndex, setVisualIndex] = useState(routeIndex);
+  const [turn, setTurn] = useState<TurnState | null>(null);
+  const midTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const endTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const clearTurnTimers = () => {
+    if (midTimerRef.current) clearTimeout(midTimerRef.current);
+    if (endTimerRef.current) clearTimeout(endTimerRef.current);
+    midTimerRef.current = null;
+    endTimerRef.current = null;
+  };
+
+  const beginVisualTurn = (targetIndex: number) => {
+    if (targetIndex === visualIndex || turn) return;
+    const reducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reducedMotion) {
+      clearTurnTimers();
+      setVisualIndex(targetIndex);
+      setTurn(null);
+      return;
+    }
+
+    clearTurnTimers();
+    const direction: TurnDirection = targetIndex > visualIndex ? 'forward' : 'backward';
+    setTurn({ from: visualIndex, to: targetIndex, direction });
+
+    // Swap chapter copy only while the turning leaf is near edge-on.
+    midTimerRef.current = setTimeout(() => setVisualIndex(targetIndex), 215);
+    endTimerRef.current = setTimeout(() => {
+      setVisualIndex(targetIndex);
+      setTurn(null);
+      clearTurnTimers();
+    }, 470);
+  };
+
+  useEffect(() => {
+    // Browser back/forward can change the route without going through our chapter controls.
+    if (!turn && routeIndex !== visualIndex) beginVisualTurn(routeIndex);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [routeIndex, turn]);
+
+  useEffect(() => () => {
+    if (midTimerRef.current) clearTimeout(midTimerRef.current);
+    if (endTimerRef.current) clearTimeout(endTimerRef.current);
+  }, []);
 
   if (status === 'booting' || status === 'loading') {
     return <main className="paper-loading"><span className="paper-loading__sheet"/><b>Opening your learning journal…</b></main>;
   }
   if (!dashboard || status === 'locked') return <AccessGate />;
 
-  const index = Math.max(0, chapters.findIndex((chapter) => chapter.href === pathname));
-  const chapter = chapters[index];
-  const previous = index > 0 ? chapters[index - 1] : null;
-  const next = index < chapters.length - 1 ? chapters[index + 1] : null;
+  const chapter = chapters[visualIndex];
+  const previous = visualIndex > 0 ? chapters[visualIndex - 1] : null;
+  const next = visualIndex < chapters.length - 1 ? chapters[visualIndex + 1] : null;
+  const activeIndex = turn?.to ?? visualIndex;
+
+  const navigateTo = (event: React.MouseEvent<HTMLAnchorElement>, targetIndex: number, href: string) => {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+    event.preventDefault();
+    if (turn || targetIndex === activeIndex) return;
+
+    const reducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reducedMotion) {
+      clearTurnTimers();
+      setVisualIndex(targetIndex);
+      setTurn(null);
+      router.push(href, { scroll: false });
+      return;
+    }
+
+    beginVisualTurn(targetIndex);
+    router.push(href, { scroll: false });
+  };
 
   return (
     <main className="paper-app-shell">
-      <div className="paper-desk" aria-label="English Level Up learning journal">
+      <div className={`paper-desk ${turn ? 'is-page-turning' : ''}`} aria-label="English Level Up learning journal">
         <div className="paper-desk__shade" aria-hidden="true" />
         <header className="paper-book-brand" aria-label="English Level Up">
           <span>ENGLISH</span>
@@ -37,10 +106,16 @@ export function PaperBookShell({ children: _children }: { children: React.ReactN
           <small>LEARNING JOURNAL</small>
         </header>
 
-        <div className="book-stage">
-          <EdgeControl direction="previous" href={previous?.href} label={previous ? `Previous: ${previous.label}` : 'First chapter'} />
+        <div className={`book-stage ${turn ? 'is-page-turning' : ''}`} aria-busy={turn ? 'true' : undefined}>
+          <EdgeControl
+            direction="previous"
+            href={previous?.href}
+            label={previous ? `Previous: ${previous.label}` : 'First chapter'}
+            disabled={Boolean(turn)}
+            onNavigate={previous ? (event) => navigateTo(event, visualIndex - 1, previous.href) : undefined}
+          />
 
-          <div className="book-spread">
+          <div className={`book-spread ${turn ? `is-turning is-turning--${turn.direction}` : ''}`}>
             <PaperStackFrame side="left" />
             <PaperStackFrame side="right" />
 
@@ -56,7 +131,7 @@ export function PaperBookShell({ children: _children }: { children: React.ReactN
                 <b>BOOK SHELL PREVIEW</b>
                 <p>Stage 1 validates the paper system, responsive book structure, chapter navigation, and page controls before learning content is restyled.</p>
               </div>
-              <div className="book-page__folio">{index * 2 + 1}</div>
+              <div className="book-page__folio">{visualIndex * 2 + 1}</div>
             </PaperPage>
 
             <PaperPage className="book-page--right">
@@ -69,20 +144,35 @@ export function PaperBookShell({ children: _children }: { children: React.ReactN
               </div>
               <div className="book-page__navigation-hint">
                 <span>{previous ? `← ${previous.label}` : 'Beginning'}</span>
-                <b>{index + 1} / {chapters.length}</b>
+                <b>{visualIndex + 1} / {chapters.length}</b>
                 <span>{next ? `${next.label} →` : 'End'}</span>
               </div>
-              <div className="book-page__folio">{index * 2 + 2}</div>
+              <div className="book-page__folio">{visualIndex * 2 + 2}</div>
             </PaperPage>
 
             <div className="book-gutter" aria-hidden="true" />
+            {turn && <PageTurnOverlay direction={turn.direction} chapter={chapters[turn.from]} />}
           </div>
 
-          <EdgeControl direction="next" href={next?.href} label={next ? `Next: ${next.label}` : 'Last chapter'} />
+          <EdgeControl
+            direction="next"
+            href={next?.href}
+            label={next ? `Next: ${next.label}` : 'Last chapter'}
+            disabled={Boolean(turn)}
+            onNavigate={next ? (event) => navigateTo(event, visualIndex + 1, next.href) : undefined}
+          />
 
           <nav className="book-tabs" aria-label="Book chapters">
-            {chapters.map((item) => (
-              <Link scroll={false} key={item.href} href={item.href} className={pathname === item.href ? 'is-active' : ''} aria-current={pathname === item.href ? 'page' : undefined}>
+            {chapters.map((item, itemIndex) => (
+              <Link
+                scroll={false}
+                key={item.href}
+                href={item.href}
+                onClick={(event) => navigateTo(event, itemIndex, item.href)}
+                className={activeIndex === itemIndex ? 'is-active' : ''}
+                aria-current={activeIndex === itemIndex ? 'page' : undefined}
+                aria-disabled={turn ? 'true' : undefined}
+              >
                 <b>{item.number}</b>
                 <span>{item.label}</span>
               </Link>
@@ -91,8 +181,16 @@ export function PaperBookShell({ children: _children }: { children: React.ReactN
         </div>
 
         <nav className="book-tabs-mobile" aria-label="Book chapters mobile">
-          {chapters.map((item) => (
-            <Link scroll={false} key={item.href} href={item.href} className={pathname === item.href ? 'is-active' : ''} aria-current={pathname === item.href ? 'page' : undefined}>
+          {chapters.map((item, itemIndex) => (
+            <Link
+              scroll={false}
+              key={item.href}
+              href={item.href}
+              onClick={(event) => navigateTo(event, itemIndex, item.href)}
+              className={activeIndex === itemIndex ? 'is-active' : ''}
+              aria-current={activeIndex === itemIndex ? 'page' : undefined}
+              aria-disabled={turn ? 'true' : undefined}
+            >
               <b>{item.number}</b>
               <span>{item.label}</span>
             </Link>
@@ -134,7 +232,41 @@ function PaperStackFrame({ side }: { side: 'left' | 'right' }) {
   );
 }
 
-function EdgeControl({ direction, href, label }: { direction: 'previous' | 'next'; href?: string; label: string }) {
+function PageTurnOverlay({ direction, chapter }: { direction: TurnDirection; chapter: (typeof chapters)[number] }) {
+  return (
+    <div className={`book-page-turn book-page-turn--${direction}`} aria-hidden="true">
+      <span className="book-page-turn__cast-shadow" />
+      <div className="book-page-turn__leaf">
+        <div className="book-page-turn__face book-page-turn__face--front">
+          <span className="book-page-turn__edge book-page-turn__edge--top" />
+          <span className="book-page-turn__edge book-page-turn__edge--outer" />
+          <div className="book-page-turn__ink">
+            <small>{direction === 'forward' ? 'CURRENT SECTION' : `CHAPTER ${chapter.number}`}</small>
+            <strong>{direction === 'forward' ? chapter.label : chapter.title}</strong>
+          </div>
+        </div>
+        <div className="book-page-turn__face book-page-turn__face--back">
+          <span className="book-page-turn__edge book-page-turn__edge--top" />
+          <span className="book-page-turn__edge book-page-turn__edge--outer" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function EdgeControl({
+  direction,
+  href,
+  label,
+  onNavigate,
+  disabled = false,
+}: {
+  direction: 'previous' | 'next';
+  href?: string;
+  label: string;
+  onNavigate?: (event: React.MouseEvent<HTMLAnchorElement>) => void;
+  disabled?: boolean;
+}) {
   const pieces = direction === 'next' ? ['16', '17', '18'] : ['28', '29', '30'];
   const content = (
     <span className={`page-control page-control--${direction}`} aria-hidden="true">
@@ -145,5 +277,17 @@ function EdgeControl({ direction, href, label }: { direction: 'previous' | 'next
   );
 
   if (!href) return <button className={`book-edge-control book-edge-control--${direction}`} disabled aria-label={label}>{content}</button>;
-  return <Link scroll={false} className={`book-edge-control book-edge-control--${direction}`} href={href} aria-label={label}>{content}</Link>;
+  return (
+    <Link
+      scroll={false}
+      className={`book-edge-control book-edge-control--${direction}`}
+      href={href}
+      onClick={onNavigate}
+      aria-label={label}
+      aria-disabled={disabled ? 'true' : undefined}
+      tabIndex={disabled ? -1 : undefined}
+    >
+      {content}
+    </Link>
+  );
 }
