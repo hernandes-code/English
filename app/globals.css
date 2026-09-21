@@ -263,10 +263,20 @@ a { color: inherit; text-decoration: none; }
 .line-chart { margin-top: 14px; }
 .line-chart svg { display: block; width: 100%; height: auto; overflow: visible; }
 .line-chart__grid path { stroke: #293241; stroke-width: 1; }
+.line-chart__grid text { fill: #69778a; font-size: 9px; font-weight: 650; }
 .line-chart__path { fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
 .line-chart__path { stroke-dasharray: 1200; stroke-dashoffset: 1200; animation: chart-draw 1.4s var(--ease-out) .2s forwards; }
-.line-chart circle { opacity: 0; animation: point-enter .4s var(--ease-out) .85s forwards; }
+.line-chart__point { outline: none; cursor: crosshair; }
+.line-chart__hit-area { fill: transparent; }
+.line-chart__dot { stroke: var(--surface); stroke-width: 2; opacity: 0; transform-box: fill-box; transform-origin: center; animation: point-enter .4s var(--ease-out) .85s forwards; transition: r .2s ease, filter .2s ease, stroke-width .2s ease; }
+.line-chart__point:hover .line-chart__dot, .line-chart__point:focus .line-chart__dot { r: 6px; stroke-width: 3; filter: drop-shadow(0 0 7px rgba(116,167,255,.75)); }
+.line-chart__tooltip { opacity: 0; pointer-events: none; transform-box: fill-box; transition: opacity .16s ease; }
+.line-chart__point:hover .line-chart__tooltip, .line-chart__point:focus .line-chart__tooltip { opacity: 1; }
+.line-chart__tooltip rect { fill: #0d131d; stroke: #3a4b61; stroke-width: 1; filter: drop-shadow(0 9px 16px rgba(0,0,0,.35)); }
+.line-chart__tooltip text { fill: #aab6c5; font-size: 9px; }
+.line-chart__tooltip .line-chart__tooltip-title { fill: #f2f5f8; font-size: 10px; font-weight: 700; }
 .line-chart__axis { display: flex; justify-content: space-between; color: var(--muted-2); font-size: 8px; font-weight: 700; }
+.line-chart__hint { display: flex; align-items: center; gap: 6px; margin-top: 9px; color: var(--muted-2); font-size: 10px; }
 .chart-empty { height: 170px; display: grid; place-items: center; align-content: center; gap: 8px; color: var(--muted); text-align: center; font-size: 11px; }
 .benchmark-score { margin: 18px 0 10px; color: #9bb9f4; font-size: 42px; font-weight: 750; }
 .benchmark-score span { color: var(--muted-2); font-size: 13px; }
