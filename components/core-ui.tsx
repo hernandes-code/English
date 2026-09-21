@@ -240,21 +240,58 @@ export function SessionList({ sessions, onOpen, minMinutes = 10, compact = false
   return <div className={`session-list ${compact ? 'session-list--compact' : ''}`}>{sessions.map((session) => <button className="session-row" key={session.session_id} onClick={() => onOpen(session.session_id)}><span className="session-row__id">#{String(session.session_id).padStart(2,'0')}</span><div className="session-row__copy"><strong>{session.primary_language_topic ?? session.session_type ?? 'Learning session'}</strong><span>{session.marketing_context || session.session_date}</span></div><div className="session-row__meta"><span className={Number(session.duration_min ?? 0) >= minMinutes ? 'qualifies' : ''}>{session.duration_min ?? '—'} min</span><Icon name="chevronRight" size={16}/></div></button>)}</div>;
 }
 
-export function SimpleLineChart({ points, height = 180, color = 'var(--mint)' }: { points: { x: number; y: number }[]; height?: number; color?: string }) {
+type ChartPoint = {
+  x: number;
+  y: number;
+  date?: string;
+  displayValue?: string;
+};
+
+export function SimpleLineChart({ points, height = 210, color = 'var(--primary)', metricLabel = 'Score' }: { points: ChartPoint[]; height?: number; color?: string; metricLabel?: string }) {
   const width = 600;
-  const pad = 24;
-  const usableW = width - pad * 2;
-  const usableH = height - pad * 2;
+  const pad = { top: 22, right: 22, bottom: 26, left: 42 };
+  const usableW = width - pad.left - pad.right;
+  const usableH = height - pad.top - pad.bottom;
   const valid = points.filter((point) => Number.isFinite(point.y));
   if (valid.length < 2) return <div className="chart-empty"><Icon name="info"/><span>More evidence is needed before a trend line is meaningful.</span></div>;
   const minX = Math.min(...valid.map((p) => p.x));
   const maxX = Math.max(...valid.map((p) => p.x));
   const minY = 0;
   const maxY = 100;
-  const mapX = (x:number) => pad + ((x-minX)/(maxX-minX || 1))*usableW;
-  const mapY = (y:number) => pad + usableH - ((y-minY)/(maxY-minY || 1))*usableH;
+  const mapX = (x:number) => pad.left + ((x-minX)/(maxX-minX || 1))*usableW;
+  const mapY = (y:number) => pad.top + usableH - ((y-minY)/(maxY-minY || 1))*usableH;
   const path = valid.map((p,i) => `${i===0?'M':'L'} ${mapX(p.x).toFixed(2)} ${mapY(p.y).toFixed(2)}`).join(' ');
-  return <div className="line-chart"><svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Learning evidence trend"><g className="line-chart__grid"><path d={`M ${pad} ${mapY(25)} H ${width-pad}`}/><path d={`M ${pad} ${mapY(50)} H ${width-pad}`}/><path d={`M ${pad} ${mapY(75)} H ${width-pad}`}/></g><path className="line-chart__path" style={{ stroke: color }} d={path}/>{valid.map((p) => <circle key={`${p.x}-${p.y}`} cx={mapX(p.x)} cy={mapY(p.y)} r="4" style={{ fill: color }}/>)}</svg><div className="line-chart__axis"><span>S{minX}</span><span>S{maxX}</span></div></div>;
+  const ticks = [25, 50, 75];
+  return <div className="line-chart">
+    <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label={`${metricLabel} by learning session`}>
+      <g className="line-chart__grid">{ticks.map((tick) => <g key={tick}><path d={`M ${pad.left} ${mapY(tick)} H ${width-pad.right}`}/><text x={pad.left-10} y={mapY(tick)+3} textAnchor="end">{tick}</text></g>)}</g>
+      <path className="line-chart__path" style={{ stroke: color }} d={path}/>
+      {valid.map((point) => {
+        const x = mapX(point.x);
+        const y = mapY(point.y);
+        const tooltipX = Math.max(8, Math.min(width - 158, x - 75));
+        const tooltipY = y < 76 ? y + 16 : y - 66;
+        const date = point.date ? formatChartDate(point.date) : 'Date unavailable';
+        const value = point.displayValue ?? point.y.toFixed(1);
+        return <g className="line-chart__point" key={`${point.x}-${point.y}`} tabIndex={0} role="img" aria-label={`Session ${point.x}, ${date}, ${metricLabel}: ${value}`}>
+          <circle className="line-chart__hit-area" cx={x} cy={y} r="13"/>
+          <circle className="line-chart__dot" cx={x} cy={y} r="4.5" style={{ fill: color }}/>
+          <g className="line-chart__tooltip" transform={`translate(${tooltipX} ${tooltipY})`}>
+            <rect width="150" height="52" rx="8"/>
+            <text x="11" y="18"><tspan className="line-chart__tooltip-title">Session {point.x}</tspan><tspan x="11" dy="18">{date} · {value}</tspan></text>
+          </g>
+        </g>;
+      })}
+    </svg>
+    <div className="line-chart__axis"><span>S{minX}</span><span>S{maxX}</span></div>
+    <div className="line-chart__hint"><Icon name="info" size={13}/><span>Hover, tap or focus a point to see the session details.</span></div>
+  </div>;
+}
+
+function formatChartDate(value: string) {
+  const date = new Date(`${value}T12:00:00`);
+  if (Number.isNaN(date.getTime())) return value;
+  return new Intl.DateTimeFormat('en', { month: 'short', day: 'numeric', year: 'numeric' }).format(date);
 }
 
 export function useDomainCoverage() {
