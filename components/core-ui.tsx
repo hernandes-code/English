@@ -72,6 +72,7 @@ export function AccessGate() {
 export function AppShell({ children }: { children: React.ReactNode }) {
   const { dashboard, status, refresh } = useLearning();
   const pathname = usePathname();
+  const [refreshing, setRefreshing] = useState(false);
 
   if (status === 'booting' || status === 'loading') return <main className="loading-screen"><div className="loading-pixel"/><span>Loading learning state…</span></main>;
   if (!dashboard || status === 'locked') return <AccessGate />;
@@ -87,7 +88,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <div className="sidebar__brand"><span className="sidebar__logo">EP</span><div><strong>English Progress</strong><small>Learning analytics</small></div></div>
         <div className="sidebar__section-label">Workspace</div>
         <nav className="sidebar__nav" aria-label="Main navigation">
-          {navItems.map((item) => <Link key={item.href} href={item.href} className={pathname === item.href ? 'is-active' : ''}><Icon name={item.icon}/><span>{item.label}</span></Link>)}
+          {navItems.map((item) => <Link key={item.href} href={item.href} aria-current={pathname === item.href ? 'page' : undefined} className={pathname === item.href ? 'is-active' : ''}><Icon name={item.icon}/><span>{item.label}</span></Link>)}
         </nav>
         <div className="sidebar__account"><span>{initial}</span><div><strong>{player.display_name ?? 'Hernandes'}</strong><small>{summary.total_sessions ?? 0} recorded sessions</small></div></div>
       </aside>
@@ -96,12 +97,20 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <div className="topbar__title"><strong>{activeItem.label}</strong><span>Business English learning dashboard</span></div>
           <div className="topbar__actions">
             <span className="live-status"><i/>Live data</span>
-            <button className="refresh-button" onClick={() => void refresh()}><Icon name="refresh" size={16}/>Refresh</button>
+            <button
+              className={`refresh-button ${refreshing ? 'is-refreshing' : ''}`}
+              disabled={refreshing}
+              aria-busy={refreshing}
+              onClick={async () => {
+                setRefreshing(true);
+                try { await refresh(); } finally { setRefreshing(false); }
+              }}
+            ><Icon name="refresh" size={16}/>{refreshing ? 'Syncing…' : 'Refresh'}</button>
           </div>
         </header>
-        <main className="page-content">{children}</main>
+        <main className="page-content"><div className="page-stage" key={pathname}>{children}</div></main>
       </div>
-      <nav className="mobile-nav" aria-label="Mobile navigation">{navItems.map((item) => <Link key={item.href} href={item.href} className={pathname === item.href ? 'is-active' : ''}><Icon name={item.icon}/><span>{item.label}</span></Link>)}</nav>
+      <nav className="mobile-nav" aria-label="Mobile navigation">{navItems.map((item) => <Link key={item.href} href={item.href} aria-current={pathname === item.href ? 'page' : undefined} className={pathname === item.href ? 'is-active' : ''}><Icon name={item.icon}/><span>{item.label}</span></Link>)}</nav>
     </div>
   );
 }
