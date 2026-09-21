@@ -18,7 +18,7 @@ export function SkillsView() {
   const groups = useMemo(() => groupByDomain(filtered), [filtered]);
 
   return <>
-    <PageHeading eyebrow="SKILL MAP" title="Real learning, not decorative stats." description={`${observed} of ${skills.length} skills currently have evidence. Low-evidence scores are shown with their coverage and confidence instead of pretending every number is equally certain.`} />
+    <PageHeading eyebrow="SKILLS" title="Skill development" description={`${observed} of ${skills.length} skills currently have evidence. Scores are shown with coverage and confidence so you can separate established ability from early signals.`} />
     <div className="filter-row" role="group" aria-label="Skill filters">{(['observed','due','developing','strong','unobserved','all'] as Filter[]).map((item)=><button key={item} className={filter===item?'is-active':''} onClick={()=>setFilter(item)}>{item==='unobserved'?`Unassessed (${unobserved})`:capitalize(item)}</button>)}</div>
     <div className="skill-domain-stack">{Object.entries(groups).map(([domain,items]) => <Panel key={domain} className="skill-domain"><div className="skill-domain__header"><div><Eyebrow>{domain}</Eyebrow><h2>{items.length} {items.length===1?'skill':'skills'}</h2></div><span>{items.filter(x=>Number(x.observations??0)>0).length} assessed</span></div><div className="skill-card-grid">{items.map((skill)=><SkillCard key={skill.skill_id} skill={skill} onOpen={()=>setSkillId(skill.skill_id)}/>)}</div></Panel>)}</div>
     {!filtered.length && <Panel className="empty-panel"><p>No skills match this filter yet.</p></Panel>}

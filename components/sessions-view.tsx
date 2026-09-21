@@ -9,17 +9,21 @@ export function SessionsView(){
   const {dashboard,loadSessions}=useLearning();
   const [sessions,setSessions]=useState<SessionRow[]>([]);
   const [loading,setLoading]=useState(true);
+  const [page,setPage]=useState(0);
+  const pageSize=20;
   const [error,setError]=useState('');
   const [sessionId,setSessionId]=useState<number|null>(null);
   const min=Number(dashboard?.daily_mission?.min_session_minutes??10);
   useEffect(()=>{let active=true;void loadSessions().then((rows)=>{if(active){setSessions(rows);setLoading(false)}}).catch((cause)=>{console.error(cause);if(active){setError('Could not load the session archive.');setLoading(false)}});return()=>{active=false}},[loadSessions]);
-  const groups=useMemo(()=>groupSessions(sessions),[sessions]);
+  const groups=useMemo(()=>groupSessions(sessions.slice(page*pageSize,(page+1)*pageSize)),[sessions,page]);
   const totalMinutes=sessions.reduce((sum,s)=>sum+Number(s.duration_min??0),0);
   return <>
     <PageHeading eyebrow="SESSION ARCHIVE" title="Every substantive session remains auditable." description="Open a session to review objectives, evidence, corrections, difficulties and the exact next priority that was recorded." action={<div className="page-heading-metrics"><span>{sessions.length} sessions</span><span>{Math.round(totalMinutes)} min</span></div>}/>
     {loading&&<Panel className="loading-panel">Loading session history…</Panel>}
     {error&&<Panel className="error-panel">{error}</Panel>}
     {!loading&&!error&&<div className="session-timeline">{Object.entries(groups).map(([date,rows])=><section key={date} className="session-day"><div className="session-day__date"><span>{formatDate(date)}</span><small>{rows.length} {rows.length===1?'session':'sessions'}</small></div><Panel className="session-day__panel">{rows.map((session)=><button key={session.session_id} className="archive-row" onClick={()=>setSessionId(session.session_id)}><span className="archive-row__number">#{String(session.session_id).padStart(2,'0')}</span><div className="archive-row__copy"><strong>{session.primary_language_topic??session.session_type??'Learning session'}</strong><span>{session.marketing_context||'Professional English practice'}</span></div><div className="archive-row__tags"><span className={Number(session.duration_min??0)>=min?'is-qualifying':''}><Icon name="clock" size={14}/>{session.duration_min??'—'} min</span>{session.is_benchmark&&<span>Benchmark</span>}<Icon name="chevronRight" size={16}/></div></button>)}</Panel></section>)}</div>}
+    {!loading&&!error&&sessions.length===0&&<Panel className="empty-panel">No sessions recorded yet.</Panel>}
+    {!loading&&!error&&sessions.length>pageSize&&<nav className="archive-pagination" aria-label="Session history pages"><button disabled={page===0} onClick={()=>setPage(p=>p-1)}>Newer</button><span>Page {page+1} / {Math.ceil(sessions.length/pageSize)}</span><button disabled={(page+1)*pageSize>=sessions.length} onClick={()=>setPage(p=>p+1)}>Older</button></nav>}
     <SessionDialog sessionId={sessionId} onClose={()=>setSessionId(null)}/>
   </>
 }

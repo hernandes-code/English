@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { createPortal } from 'react-dom';
 import { usePathname } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Icon } from './icons';
@@ -13,18 +14,6 @@ export function Score({ value, digits = 1 }: { value?: number | null; digits?: n
   return <>{Number(value).toFixed(digits)}</>;
 }
 
-export function PixelAvatar({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
-  return (
-    <div className={`pixel-avatar pixel-avatar--${size}`} aria-hidden="true">
-      <span className="pixel-avatar__hair" />
-      <span className="pixel-avatar__face"><i /><b /></span>
-      <span className="pixel-avatar__body" />
-      <span className="pixel-avatar__arm pixel-avatar__arm--left" />
-      <span className="pixel-avatar__arm pixel-avatar__arm--right" />
-    </div>
-  );
-}
-
 export function Panel({ children, className = '', elevated = false }: { children: React.ReactNode; className?: string; elevated?: boolean }) {
   return <section className={`panel ${elevated ? 'panel--elevated' : ''} ${className}`}>{children}</section>;
 }
@@ -35,7 +24,7 @@ export function Eyebrow({ children }: { children: React.ReactNode }) {
 
 export function ProgressBar({ value, muted = false }: { value: number; muted?: boolean }) {
   const safe = Math.max(0, Math.min(100, Number(value) || 0));
-  return <div className={`progress ${muted ? 'progress--muted' : ''}`}><span style={{ width: `${safe}%` }} /></div>;
+  return <div className={`progress ${muted ? 'progress--muted' : ''}`} role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(safe)}><span style={{ width: `${safe}%` }} /></div>;
 }
 
 export function Trend({ value }: { value?: number | null }) {
@@ -65,15 +54,14 @@ export function AccessGate() {
 
   return (
     <main className="gate-shell">
-      <div className="gate-stars" />
       <Panel className="gate-card" elevated>
-        <div className="gate-brand"><span>ENGLISH</span><strong>LEVEL UP</strong><small>REAL SKILLS. REAL PROGRESS.</small></div>
-        <PixelAvatar size="lg" />
-        <div className="gate-copy"><Eyebrow>PRIVATE LEARNING DATA</Eyebrow><h1>Welcome back.</h1><p>Enter your local dashboard code to load the learning model.</p></div>
+        <div className="gate-mark" aria-hidden="true">EP</div>
+        <div className="gate-brand"><strong>English Progress</strong><small>Learning analytics</small></div>
+        <div className="gate-copy"><Eyebrow>PRIVATE DASHBOARD</Eyebrow><h1>Welcome back</h1><p>Enter your access code to view your current learning state.</p></div>
         <form className="gate-form" onSubmit={async (event) => { event.preventDefault(); if (value.trim()) await login(value.trim()); }}>
           <label className="sr-only" htmlFor="access-code">Access code</label>
           <input id="access-code" value={value} onChange={(event) => setValue(event.target.value)} autoComplete="off" spellCheck={false} placeholder="Enter access code" />
-          <button className="button button--primary" disabled={busy}>{busy ? 'LOADING…' : 'ENTER'}</button>
+          <button className="button button--primary" disabled={busy}>{busy ? 'Loading…' : 'Continue'}</button>
         </form>
         <div className="gate-error" role="alert">{error}</div>
       </Panel>
@@ -84,42 +72,47 @@ export function AccessGate() {
 export function AppShell({ children }: { children: React.ReactNode }) {
   const { dashboard, status, refresh } = useLearning();
   const pathname = usePathname();
+  const [refreshing, setRefreshing] = useState(false);
 
   if (status === 'booting' || status === 'loading') return <main className="loading-screen"><div className="loading-pixel"/><span>Loading learning state…</span></main>;
   if (!dashboard || status === 'locked') return <AccessGate />;
 
   const player = dashboard.player ?? {};
+  const summary = dashboard.summary ?? {};
+  const activeItem = navItems.find((item) => item.href === pathname) ?? navItems[0];
+  const initial = String(player.display_name ?? 'H').trim().charAt(0).toUpperCase();
 
   return (
     <div className="app-shell">
       <aside className="sidebar">
-        <div className="sidebar__brand"><span>ENGLISH</span><strong>LEVEL UP</strong></div>
-        <div className="sidebar__player"><PixelAvatar size="md"/><div><b>LV. {player.level ?? 1}</b><small>{player.total_xp ?? 0} XP</small></div></div>
-        <ProgressBar value={Number(player.level_progress_pct ?? 0)} />
+        <div className="sidebar__brand"><span className="sidebar__logo">EP</span><div><strong>English Progress</strong><small>Learning analytics</small></div></div>
+        <div className="sidebar__section-label">Workspace</div>
         <nav className="sidebar__nav" aria-label="Main navigation">
-          {navItems.map((item) => <Link key={item.href} href={item.href} className={pathname === item.href ? 'is-active' : ''}><Icon name={item.icon}/><span>{item.label}</span></Link>)}
+          {navItems.map((item) => <Link key={item.href} href={item.href} aria-current={pathname === item.href ? 'page' : undefined} className={pathname === item.href ? 'is-active' : ''}><Icon name={item.icon}/><span>{item.label}</span></Link>)}
         </nav>
-        <div className="sidebar__foot">LEARNING FIRST</div>
+        <div className="sidebar__account"><span>{initial}</span><div><strong>{player.display_name ?? 'Hernandes'}</strong><small>{summary.total_sessions ?? 0} recorded sessions</small></div></div>
       </aside>
       <div className="app-main">
         <header className="topbar">
-          <div><Eyebrow>LEARNING STATUS</Eyebrow><div className="topbar__title"><strong>{player.display_name ?? 'Hernandes'}</strong><span>Business English progression</span></div></div>
+          <div className="topbar__title"><strong>{activeItem.label}</strong><span>Business English learning dashboard</span></div>
           <div className="topbar__actions">
-            <button className="icon-button" onClick={() => void refresh()} title="Refresh learning data" aria-label="Refresh learning data"><Icon name="refresh"/></button>
-            <MetricChip icon="bolt" value={player.total_xp ?? 0} label="XP" />
-            <MetricChip icon="coin" value={player.coin_balance ?? 0} label="COINS" />
-            <MetricChip icon="flame" value={dashboard.current_weekday_streak ?? 0} label="STREAK" />
+            <span className="live-status"><i/>Live data</span>
+            <button
+              className={`refresh-button ${refreshing ? 'is-refreshing' : ''}`}
+              disabled={refreshing}
+              aria-busy={refreshing}
+              onClick={async () => {
+                setRefreshing(true);
+                try { await refresh(); } finally { setRefreshing(false); }
+              }}
+            ><Icon name="refresh" size={16}/>{refreshing ? 'Syncing…' : 'Refresh'}</button>
           </div>
         </header>
-        <main className="page-content">{children}</main>
+        <main className="page-content"><div className="page-stage" key={pathname}>{children}</div></main>
       </div>
-      <nav className="mobile-nav" aria-label="Mobile navigation">{navItems.map((item) => <Link key={item.href} href={item.href} className={pathname === item.href ? 'is-active' : ''}><Icon name={item.icon}/><span>{item.label}</span></Link>)}</nav>
+      <nav className="mobile-nav" aria-label="Mobile navigation">{navItems.map((item) => <Link key={item.href} href={item.href} aria-current={pathname === item.href ? 'page' : undefined} className={pathname === item.href ? 'is-active' : ''}><Icon name={item.icon}/><span>{item.label}</span></Link>)}</nav>
     </div>
   );
-}
-
-function MetricChip({ icon, value, label }: { icon: 'bolt' | 'coin' | 'flame'; value: number; label: string }) {
-  return <div className="metric-chip"><Icon name={icon}/><div><b>{value}</b><small>{label}</small></div></div>;
 }
 
 export function PageHeading({ eyebrow, title, description, action }: { eyebrow: string; title: string; description?: string; action?: React.ReactNode }) {
@@ -165,7 +158,7 @@ export function Dialog({ open, onClose, titleId, children, wide = false }: { ope
     return () => { document.removeEventListener('keydown', onKey); previous?.focus(); };
   }, [open, onClose]);
   if (!open) return null;
-  return <div className="dialog-backdrop" role="presentation" onMouseDown={(event) => { if (event.currentTarget === event.target) onClose(); }}><div className={`dialog ${wide ? 'dialog--wide' : ''}`} role="dialog" aria-modal="true" aria-labelledby={titleId}><button ref={closeRef} className="dialog__close" onClick={onClose} aria-label="Close dialog"><Icon name="close"/></button>{children}</div></div>;
+  return createPortal(<div className="dialog-backdrop" role="presentation" onMouseDown={(event) => { if (event.currentTarget === event.target) onClose(); }}><div className={`dialog ${wide ? 'dialog--wide' : ''}`} role="dialog" aria-modal="true" aria-labelledby={titleId}><button ref={closeRef} className="dialog__close" onClick={onClose} aria-label="Close dialog"><Icon name="close"/></button>{children}</div></div>, document.body);
 }
 
 export function SkillDialog({ skillId, onClose }: { skillId: string | null; onClose: () => void }) {
@@ -247,21 +240,58 @@ export function SessionList({ sessions, onOpen, minMinutes = 10, compact = false
   return <div className={`session-list ${compact ? 'session-list--compact' : ''}`}>{sessions.map((session) => <button className="session-row" key={session.session_id} onClick={() => onOpen(session.session_id)}><span className="session-row__id">#{String(session.session_id).padStart(2,'0')}</span><div className="session-row__copy"><strong>{session.primary_language_topic ?? session.session_type ?? 'Learning session'}</strong><span>{session.marketing_context || session.session_date}</span></div><div className="session-row__meta"><span className={Number(session.duration_min ?? 0) >= minMinutes ? 'qualifies' : ''}>{session.duration_min ?? '—'} min</span><Icon name="chevronRight" size={16}/></div></button>)}</div>;
 }
 
-export function SimpleLineChart({ points, height = 180, color = 'var(--mint)' }: { points: { x: number; y: number }[]; height?: number; color?: string }) {
+type ChartPoint = {
+  x: number;
+  y: number;
+  date?: string;
+  displayValue?: string;
+};
+
+export function SimpleLineChart({ points, height = 210, color = 'var(--primary)', metricLabel = 'Score' }: { points: ChartPoint[]; height?: number; color?: string; metricLabel?: string }) {
   const width = 600;
-  const pad = 24;
-  const usableW = width - pad * 2;
-  const usableH = height - pad * 2;
+  const pad = { top: 22, right: 22, bottom: 26, left: 42 };
+  const usableW = width - pad.left - pad.right;
+  const usableH = height - pad.top - pad.bottom;
   const valid = points.filter((point) => Number.isFinite(point.y));
   if (valid.length < 2) return <div className="chart-empty"><Icon name="info"/><span>More evidence is needed before a trend line is meaningful.</span></div>;
   const minX = Math.min(...valid.map((p) => p.x));
   const maxX = Math.max(...valid.map((p) => p.x));
   const minY = 0;
   const maxY = 100;
-  const mapX = (x:number) => pad + ((x-minX)/(maxX-minX || 1))*usableW;
-  const mapY = (y:number) => pad + usableH - ((y-minY)/(maxY-minY || 1))*usableH;
+  const mapX = (x:number) => pad.left + ((x-minX)/(maxX-minX || 1))*usableW;
+  const mapY = (y:number) => pad.top + usableH - ((y-minY)/(maxY-minY || 1))*usableH;
   const path = valid.map((p,i) => `${i===0?'M':'L'} ${mapX(p.x).toFixed(2)} ${mapY(p.y).toFixed(2)}`).join(' ');
-  return <div className="line-chart"><svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Learning evidence trend"><g className="line-chart__grid"><path d={`M ${pad} ${mapY(25)} H ${width-pad}`}/><path d={`M ${pad} ${mapY(50)} H ${width-pad}`}/><path d={`M ${pad} ${mapY(75)} H ${width-pad}`}/></g><path className="line-chart__path" style={{ stroke: color }} d={path}/>{valid.map((p) => <circle key={`${p.x}-${p.y}`} cx={mapX(p.x)} cy={mapY(p.y)} r="4" style={{ fill: color }}/>)}</svg><div className="line-chart__axis"><span>S{minX}</span><span>S{maxX}</span></div></div>;
+  const ticks = [25, 50, 75];
+  return <div className="line-chart">
+    <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label={`${metricLabel} by learning session`}>
+      <g className="line-chart__grid">{ticks.map((tick) => <g key={tick}><path d={`M ${pad.left} ${mapY(tick)} H ${width-pad.right}`}/><text x={pad.left-10} y={mapY(tick)+3} textAnchor="end">{tick}</text></g>)}</g>
+      <path className="line-chart__path" style={{ stroke: color }} d={path}/>
+      {valid.map((point) => {
+        const x = mapX(point.x);
+        const y = mapY(point.y);
+        const tooltipX = Math.max(8, Math.min(width - 158, x - 75));
+        const tooltipY = y < 76 ? y + 16 : y - 66;
+        const date = point.date ? formatChartDate(point.date) : 'Date unavailable';
+        const value = point.displayValue ?? point.y.toFixed(1);
+        return <g className="line-chart__point" key={`${point.x}-${point.y}`} tabIndex={0} role="img" aria-label={`Session ${point.x}, ${date}, ${metricLabel}: ${value}`}>
+          <circle className="line-chart__hit-area" cx={x} cy={y} r="13"/>
+          <circle className="line-chart__dot" cx={x} cy={y} r="4.5" style={{ fill: color }}/>
+          <g className="line-chart__tooltip" transform={`translate(${tooltipX} ${tooltipY})`}>
+            <rect width="150" height="52" rx="8"/>
+            <text x="11" y="18"><tspan className="line-chart__tooltip-title">Session {point.x}</tspan><tspan x="11" dy="18">{date} · {value}</tspan></text>
+          </g>
+        </g>;
+      })}
+    </svg>
+    <div className="line-chart__axis"><span>S{minX}</span><span>S{maxX}</span></div>
+    <div className="line-chart__hint"><Icon name="info" size={13}/><span>Hover, tap or focus a point to see the session details.</span></div>
+  </div>;
+}
+
+function formatChartDate(value: string) {
+  const date = new Date(`${value}T12:00:00`);
+  if (Number.isNaN(date.getTime())) return value;
+  return new Intl.DateTimeFormat('en', { month: 'short', day: 'numeric', year: 'numeric' }).format(date);
 }
 
 export function useDomainCoverage() {
