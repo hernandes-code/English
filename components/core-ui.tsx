@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { createPortal } from 'react-dom';
 import { usePathname } from 'next/navigation';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Icon } from './icons';
@@ -13,18 +14,6 @@ export function Score({ value, digits = 1 }: { value?: number | null; digits?: n
   return <>{Number(value).toFixed(digits)}</>;
 }
 
-export function PixelAvatar({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
-  return (
-    <div className={`pixel-avatar pixel-avatar--${size}`} aria-hidden="true">
-      <span className="pixel-avatar__hair" />
-      <span className="pixel-avatar__face"><i /><b /></span>
-      <span className="pixel-avatar__body" />
-      <span className="pixel-avatar__arm pixel-avatar__arm--left" />
-      <span className="pixel-avatar__arm pixel-avatar__arm--right" />
-    </div>
-  );
-}
-
 export function Panel({ children, className = '', elevated = false }: { children: React.ReactNode; className?: string; elevated?: boolean }) {
   return <section className={`panel ${elevated ? 'panel--elevated' : ''} ${className}`}>{children}</section>;
 }
@@ -35,7 +24,7 @@ export function Eyebrow({ children }: { children: React.ReactNode }) {
 
 export function ProgressBar({ value, muted = false }: { value: number; muted?: boolean }) {
   const safe = Math.max(0, Math.min(100, Number(value) || 0));
-  return <div className={`progress ${muted ? 'progress--muted' : ''}`}><span style={{ width: `${safe}%` }} /></div>;
+  return <div className={`progress ${muted ? 'progress--muted' : ''}`} role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(safe)}><span style={{ width: `${safe}%` }} /></div>;
 }
 
 export function Trend({ value }: { value?: number | null }) {
@@ -65,15 +54,14 @@ export function AccessGate() {
 
   return (
     <main className="gate-shell">
-      <div className="gate-stars" />
       <Panel className="gate-card" elevated>
-        <div className="gate-brand"><span>ENGLISH</span><strong>LEVEL UP</strong><small>REAL SKILLS. REAL PROGRESS.</small></div>
-        <PixelAvatar size="lg" />
-        <div className="gate-copy"><Eyebrow>PRIVATE LEARNING DATA</Eyebrow><h1>Welcome back.</h1><p>Enter your local dashboard code to load the learning model.</p></div>
+        <div className="gate-mark" aria-hidden="true">EP</div>
+        <div className="gate-brand"><strong>English Progress</strong><small>Learning analytics</small></div>
+        <div className="gate-copy"><Eyebrow>PRIVATE DASHBOARD</Eyebrow><h1>Welcome back</h1><p>Enter your access code to view your current learning state.</p></div>
         <form className="gate-form" onSubmit={async (event) => { event.preventDefault(); if (value.trim()) await login(value.trim()); }}>
           <label className="sr-only" htmlFor="access-code">Access code</label>
           <input id="access-code" value={value} onChange={(event) => setValue(event.target.value)} autoComplete="off" spellCheck={false} placeholder="Enter access code" />
-          <button className="button button--primary" disabled={busy}>{busy ? 'LOADING…' : 'ENTER'}</button>
+          <button className="button button--primary" disabled={busy}>{busy ? 'Loading…' : 'Continue'}</button>
         </form>
         <div className="gate-error" role="alert">{error}</div>
       </Panel>
@@ -89,26 +77,26 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   if (!dashboard || status === 'locked') return <AccessGate />;
 
   const player = dashboard.player ?? {};
+  const summary = dashboard.summary ?? {};
+  const activeItem = navItems.find((item) => item.href === pathname) ?? navItems[0];
+  const initial = String(player.display_name ?? 'H').trim().charAt(0).toUpperCase();
 
   return (
     <div className="app-shell">
       <aside className="sidebar">
-        <div className="sidebar__brand"><span>ENGLISH</span><strong>LEVEL UP</strong></div>
-        <div className="sidebar__player"><PixelAvatar size="md"/><div><b>LV. {player.level ?? 1}</b><small>{player.total_xp ?? 0} XP</small></div></div>
-        <ProgressBar value={Number(player.level_progress_pct ?? 0)} />
+        <div className="sidebar__brand"><span className="sidebar__logo">EP</span><div><strong>English Progress</strong><small>Learning analytics</small></div></div>
+        <div className="sidebar__section-label">Workspace</div>
         <nav className="sidebar__nav" aria-label="Main navigation">
           {navItems.map((item) => <Link key={item.href} href={item.href} className={pathname === item.href ? 'is-active' : ''}><Icon name={item.icon}/><span>{item.label}</span></Link>)}
         </nav>
-        <div className="sidebar__foot">LEARNING FIRST</div>
+        <div className="sidebar__account"><span>{initial}</span><div><strong>{player.display_name ?? 'Hernandes'}</strong><small>{summary.total_sessions ?? 0} recorded sessions</small></div></div>
       </aside>
       <div className="app-main">
         <header className="topbar">
-          <div><Eyebrow>LEARNING STATUS</Eyebrow><div className="topbar__title"><strong>{player.display_name ?? 'Hernandes'}</strong><span>Business English progression</span></div></div>
+          <div className="topbar__title"><strong>{activeItem.label}</strong><span>Business English learning dashboard</span></div>
           <div className="topbar__actions">
-            <button className="icon-button" onClick={() => void refresh()} title="Refresh learning data" aria-label="Refresh learning data"><Icon name="refresh"/></button>
-            <MetricChip icon="bolt" value={player.total_xp ?? 0} label="XP" />
-            <MetricChip icon="coin" value={player.coin_balance ?? 0} label="COINS" />
-            <MetricChip icon="flame" value={dashboard.current_weekday_streak ?? 0} label="STREAK" />
+            <span className="live-status"><i/>Live data</span>
+            <button className="refresh-button" onClick={() => void refresh()}><Icon name="refresh" size={16}/>Refresh</button>
           </div>
         </header>
         <main className="page-content">{children}</main>
@@ -116,10 +104,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <nav className="mobile-nav" aria-label="Mobile navigation">{navItems.map((item) => <Link key={item.href} href={item.href} className={pathname === item.href ? 'is-active' : ''}><Icon name={item.icon}/><span>{item.label}</span></Link>)}</nav>
     </div>
   );
-}
-
-function MetricChip({ icon, value, label }: { icon: 'bolt' | 'coin' | 'flame'; value: number; label: string }) {
-  return <div className="metric-chip"><Icon name={icon}/><div><b>{value}</b><small>{label}</small></div></div>;
 }
 
 export function PageHeading({ eyebrow, title, description, action }: { eyebrow: string; title: string; description?: string; action?: React.ReactNode }) {
@@ -165,7 +149,7 @@ export function Dialog({ open, onClose, titleId, children, wide = false }: { ope
     return () => { document.removeEventListener('keydown', onKey); previous?.focus(); };
   }, [open, onClose]);
   if (!open) return null;
-  return <div className="dialog-backdrop" role="presentation" onMouseDown={(event) => { if (event.currentTarget === event.target) onClose(); }}><div className={`dialog ${wide ? 'dialog--wide' : ''}`} role="dialog" aria-modal="true" aria-labelledby={titleId}><button ref={closeRef} className="dialog__close" onClick={onClose} aria-label="Close dialog"><Icon name="close"/></button>{children}</div></div>;
+  return createPortal(<div className="dialog-backdrop" role="presentation" onMouseDown={(event) => { if (event.currentTarget === event.target) onClose(); }}><div className={`dialog ${wide ? 'dialog--wide' : ''}`} role="dialog" aria-modal="true" aria-labelledby={titleId}><button ref={closeRef} className="dialog__close" onClick={onClose} aria-label="Close dialog"><Icon name="close"/></button>{children}</div></div>, document.body);
 }
 
 export function SkillDialog({ skillId, onClose }: { skillId: string | null; onClose: () => void }) {

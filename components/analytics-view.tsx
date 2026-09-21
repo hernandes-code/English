@@ -18,7 +18,7 @@ export function AnalyticsView(){
   const benchmarks=data.benchmark_history??[];
   const latest=benchmarks.at(-1);
   return <>
-    <PageHeading eyebrow="LEARNING ANALYTICS" title="Evidence first. Trends only when the data supports them." description="This page separates current state, longitudinal evidence and practice consistency. Game rewards are intentionally kept out of the learning analysis."/>
+    <PageHeading eyebrow="ANALYTICS" title="Evidence-based progress" description="Current state, longitudinal evidence and practice consistency are separated so short-term variation is not mistaken for a real trend."/>
     <div className="analytics-metrics"><Metric label="TOTAL PRACTICE" value={`${Math.round(Number(practice.total_minutes??0))}m`} note={`${practice.total_sessions??0} sessions`} /><Metric label="AVG. SESSION" value={`${Number(practice.avg_minutes??0).toFixed(1)}m`} note={`${practice.qualifying_sessions??0} Daily Five qualifiers`} /><Metric label="SKILLS ASSESSED" value={`${data.assessed_skills??0}/${data.total_skills??0}`} note="coverage matters for confidence" /><Metric label="BENCHMARKS" value={benchmarks.length} note={benchmarks.length<2?'trend after Benchmark 2':'longitudinal trend available'} /></div>
     <div className="analytics-grid">
       <Panel className="chart-card" elevated><Eyebrow>SESSION EVIDENCE SCORE</Eyebrow><h2>How evidence quality is moving.</h2><p>Average scored observations per session. This is not a replacement for Current State; it is a session-level signal.</p><SimpleLineChart points={evidencePoints}/></Panel>
