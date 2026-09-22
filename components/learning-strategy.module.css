@@ -1,0 +1,320 @@
+.insightGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(320px, .65fr);
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.strategyPanel,
+.coveragePanel,
+.coverageOverview {
+  padding: 22px;
+}
+
+.panelHeading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.panelHeading h2,
+.coverageOverview h2 {
+  margin: 5px 0 0;
+  font-size: 17px;
+  letter-spacing: -.015em;
+}
+
+.intro,
+.coverageOverview p {
+  margin: 9px 0 16px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.checkChip,
+.neutralChip {
+  flex: 0 0 auto;
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255,255,255,.52);
+  color: #5f666e;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.planGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+}
+
+.planCard {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface-2);
+}
+
+.planCard > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.planCard > div span {
+  color: #333a40;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .05em;
+}
+
+.planCard > div b {
+  overflow: hidden;
+  color: var(--muted-2);
+  font-size: 8px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.planCard > strong {
+  display: block;
+  font-size: 12px;
+}
+
+.planCard p,
+.planCard small {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+}
+
+.planCard p {
+  min-height: 34px;
+  margin: 6px 0;
+  color: #515960;
+  font-size: 10px;
+  line-height: 1.45;
+  -webkit-line-clamp: 2;
+}
+
+.planCard small {
+  color: var(--muted-2);
+  font-size: 9px;
+  line-height: 1.4;
+  -webkit-line-clamp: 2;
+}
+
+.planCard em {
+  display: block;
+  margin-top: 8px;
+  color: #4b535a;
+  font-size: 8px;
+  font-style: normal;
+  font-weight: 700;
+}
+
+.reviewLine {
+  display: grid;
+  grid-template-columns: auto auto minmax(0,1fr);
+  align-items: center;
+  gap: 8px;
+  margin-top: 11px;
+  padding-top: 11px;
+  border-top: 1px solid var(--line-soft);
+  color: var(--muted-2);
+  font-size: 9px;
+}
+
+.reviewLine strong {
+  color: #30363c;
+}
+
+.reviewLine span:last-child {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.coverageStats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 13px 0;
+}
+
+.coverageStats div {
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--surface-2);
+}
+
+.coverageStats strong,
+.coverageStats span {
+  display: block;
+}
+
+.coverageStats strong {
+  font-size: 18px;
+}
+
+.coverageStats span {
+  margin-top: 3px;
+  color: var(--muted-2);
+  font-size: 8px;
+}
+
+.nextProbe {
+  padding: 12px;
+  border: 1px solid rgba(102,121,134,.22);
+  border-radius: 10px;
+  background: rgba(102,121,134,.07);
+}
+
+.nextProbe > span,
+.nextProbe > strong {
+  display: block;
+}
+
+.nextProbe > span {
+  color: var(--muted-2);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+.nextProbe > strong {
+  margin-top: 5px;
+  font-size: 11px;
+}
+
+.nextProbe p {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.coverageLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 13px;
+  color: #3d454c;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.emptyState {
+  padding: 18px;
+  border: 1px dashed var(--line);
+  border-radius: 10px;
+  color: var(--muted);
+  text-align: center;
+  font-size: 11px;
+}
+
+.coverageOverview {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 16px;
+}
+
+.coverageOverview p {
+  max-width: 700px;
+  margin-bottom: 0;
+}
+
+.overviewStats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(92px,1fr));
+  gap: 8px;
+}
+
+.overviewStats span {
+  display: grid;
+  gap: 3px;
+  min-width: 92px;
+  padding: 11px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--surface-2);
+}
+
+.overviewStats strong {
+  font-size: 18px;
+}
+
+.overviewStats small {
+  color: var(--muted-2);
+  font-size: 8px;
+}
+
+.awaitingBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 6px;
+  border: 1px solid rgba(102,121,134,.24);
+  border-radius: 999px;
+  background: rgba(102,121,134,.07);
+  color: #667986;
+  font-size: 8px;
+  font-weight: 700;
+}
+
+@media (max-width: 1180px) {
+  .insightGrid,
+  .coverageOverview {
+    grid-template-columns: 1fr;
+  }
+
+  .overviewStats {
+    grid-template-columns: repeat(4, minmax(0,1fr));
+  }
+}
+
+@media (max-width: 680px) {
+  .strategyPanel,
+  .coveragePanel,
+  .coverageOverview {
+    padding: 17px;
+  }
+
+  .panelHeading {
+    display: grid;
+  }
+
+  .checkChip,
+  .neutralChip {
+    width: max-content;
+  }
+
+  .planGrid,
+  .overviewStats {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .reviewLine {
+    grid-template-columns: 1fr auto;
+  }
+
+  .reviewLine span:last-child {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 440px) {
+  .planGrid,
+  .coverageStats,
+  .overviewStats {
+    grid-template-columns: 1fr;
+  }
+}
