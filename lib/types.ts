@@ -39,6 +39,8 @@ export type DashboardSummary = {
   strong_mastered_automatic?: number;
 };
 
+export type CoverageStatus = 'Unobserved' | 'Voice Required' | 'Screening' | 'Baseline Established';
+
 export type SkillState = {
   skill_id: string;
   domain: string;
@@ -63,6 +65,17 @@ export type SkillState = {
   main_known_issue?: string;
   recommended_focus?: string;
   automatic?: boolean;
+  coverage_status?: CoverageStatus;
+  screened?: boolean;
+  baseline_established?: boolean;
+  meaningful_observations?: number;
+  distinct_contexts?: number;
+  probe_attempts?: number;
+  insufficient_attempts?: number;
+  evidence_mode?: 'any' | 'voice_required';
+  coverage_priority?: number;
+  baseline_required?: boolean;
+  probe_goal?: string;
 };
 
 export type PrioritySkill = Pick<
@@ -79,6 +92,85 @@ export type PrioritySkill = Pick<
   | 'main_known_issue'
   | 'recommended_focus'
 >;
+
+export type CoverageSummary = {
+  total_skills?: number;
+  screened_skills?: number;
+  baseline_established_skills?: number;
+  unobserved_skills?: number;
+  voice_required_skills?: number;
+  coverage_debt?: number;
+  strategic_baseline_debt?: number;
+  diagnostic_coverage_active?: boolean;
+};
+
+export type CoverageProbe = SkillState & {
+  eligible_now?: boolean;
+  queue_reason?: 'screening_debt' | 'strategic_baseline_followup';
+  probe_guidance?: string;
+  last_probe_session?: number | null;
+  last_evidence_session?: number | null;
+};
+
+export type SkillCoverageContext = {
+  summary?: CoverageSummary;
+  recommended_probe?: CoverageProbe | null;
+  recommended_text_probe?: CoverageProbe | null;
+  recommended_voice_probe?: CoverageProbe | null;
+  queue?: CoverageProbe[];
+  max_primary_probes_per_session?: number;
+};
+
+export type TeachingPlan = {
+  plan_id?: string;
+  priority_rank?: number;
+  skill_id?: string;
+  skill_name?: string;
+  domain?: string;
+  problem_type?: string;
+  teaching_strategy?: string;
+  exercise_type?: string;
+  rationale?: string;
+  success_criterion?: string;
+  target_independence?: number;
+  planned_review_session?: number;
+  status?: string;
+};
+
+export type TeacherCheckState = {
+  due?: boolean;
+  sprint_id?: number;
+  coverage_debt?: number;
+  last_checkpoint?: number;
+  next_checkpoint?: number;
+  completed_sessions?: number;
+  strategic_baseline_debt?: number;
+  coverage_blind_spot_flag?: boolean;
+  diagnostic_coverage_active?: boolean;
+  overdue_by_completed_sessions?: number;
+  teacher_check_interval_completed_sessions?: number;
+};
+
+export type TeacherReview = {
+  review_id?: string;
+  sprint_id?: number;
+  benchmark_id?: string;
+  review_date?: string;
+  trigger_type?: string;
+  evidence_summary?: string;
+  strategy_assessment?: string;
+  decisions?: Record<string, unknown>[];
+  next_action_summary?: string;
+  reviewed_session?: number;
+};
+
+export type TeachingStrategy = {
+  active_plans?: TeachingPlan[];
+  last_teacher_review?: TeacherReview | null;
+  last_teacher_check?: Record<string, unknown> | null;
+  teacher_check_state?: TeacherCheckState | null;
+  teacher_learning_state?: Record<string, unknown> | null;
+};
 
 export type DomainSummary = {
   domain: string;
@@ -158,6 +250,8 @@ export type DashboardData = {
   benchmark_history?: Benchmark[];
   recent_sessions?: SessionRow[];
   reward_history?: RewardEvent[];
+  coverage?: SkillCoverageContext;
+  teaching_strategy?: TeachingStrategy;
 };
 
 export type Observation = {
