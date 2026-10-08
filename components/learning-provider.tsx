@@ -2,7 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { learningApi } from '@/lib/api';
-import type { DashboardData, LearningAnalytics, SessionDetail, SessionRow, SkillDetail } from '@/lib/types';
+import type { DashboardData, LearningAnalytics, SessionDetail, SessionRow, SkillDetail, TeachingSystemHealth } from '@/lib/types';
 
 const STORAGE_KEY = 'elu_access_code';
 
@@ -16,6 +16,7 @@ type LearningContextValue = {
   refresh: () => Promise<void>;
   loadSessions: () => Promise<SessionRow[]>;
   loadAnalytics: () => Promise<LearningAnalytics>;
+  loadTeachingSystemHealth: () => Promise<TeachingSystemHealth>;
   loadSkill: (skillId: string) => Promise<SkillDetail>;
   loadSession: (sessionId: number) => Promise<SessionDetail>;
 };
@@ -121,6 +122,11 @@ export function LearningProvider({ children }: { children: React.ReactNode }) {
     return data;
   }, [code]);
 
+  const loadTeachingSystemHealth = useCallback(async () => {
+    if (!code) throw new Error('Dashboard locked');
+    return learningApi.teachingSystemHealth(code);
+  }, [code]);
+
   const loadSkill = useCallback(async (skillId: string) => {
     if (!code) throw new Error('Dashboard locked');
     return learningApi.skill(code, skillId);
@@ -134,8 +140,8 @@ export function LearningProvider({ children }: { children: React.ReactNode }) {
   const value = useMemo<LearningContextValue>(() => ({
     code, dashboard, status, error,
     login: (value: string) => authenticate(value, true),
-    logout, refresh, loadSessions, loadAnalytics, loadSkill, loadSession,
-  }), [code, dashboard, status, error, authenticate, logout, refresh, loadSessions, loadAnalytics, loadSkill, loadSession]);
+    logout, refresh, loadSessions, loadAnalytics, loadTeachingSystemHealth, loadSkill, loadSession,
+  }), [code, dashboard, status, error, authenticate, logout, refresh, loadSessions, loadAnalytics, loadTeachingSystemHealth, loadSkill, loadSession]);
 
   return <LearningContext.Provider value={value}>{children}</LearningContext.Provider>;
 }
