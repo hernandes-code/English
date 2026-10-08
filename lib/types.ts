@@ -39,7 +39,7 @@ export type DashboardSummary = {
   strong_mastered_automatic?: number;
 };
 
-export type CoverageStatus = 'Unobserved' | 'Voice Required' | 'Screening' | 'Baseline Established';
+export type CoverageStatus = 'Unobserved' | 'Voice Required' | 'Measurement Blocked' | 'Screening' | 'Baseline Established';
 
 export type SkillState = {
   skill_id: string;
@@ -237,6 +237,63 @@ export type RewardEvent = {
   created_at?: string;
 };
 
+export type TeachingSystemState = {
+  enabled: boolean;
+  overall_status: 'disabled' | 'awaiting_benchmark' | 'healthy' | 'monitoring' | 'review_recommended' | 'architecture_review_needed';
+  benchmark_completed: boolean;
+  activation_benchmark_session_id?: number | null;
+  tracked_sessions: number;
+  completed_checks: number;
+  insufficient_checks: number;
+  pending_checks: number;
+  monitoring_signals: number;
+  review_signals: number;
+  architecture_signals: number;
+  last_tracked_session?: number | null;
+};
+
+export type TeachingSystemSignal = {
+  signal_id: number;
+  signal_key: string;
+  category: string;
+  title: string;
+  description: string;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  status: 'monitoring' | 'review_recommended' | 'architecture_review_needed' | 'resolved';
+  owner_scope: 'teacher' | 'architecture';
+  recommended_action: string;
+  first_detected_session?: number | null;
+  last_detected_session?: number | null;
+  updated_at?: string;
+};
+
+export type TeachingSystemCheck = {
+  session_id: number;
+  check_status: 'completed' | 'insufficient_evidence';
+  assessment: Record<string, string>;
+  summary: string;
+  evidence_refs?: unknown[];
+  updated_at?: string;
+};
+
+export type TeachingSystemHealth = {
+  state?: TeachingSystemState | null;
+  active_signals?: TeachingSystemSignal[];
+  recent_checks?: TeachingSystemCheck[];
+  signal_events?: {
+    event_id: number;
+    signal_key: string;
+    session_id?: number | null;
+    source_kind: string;
+    event_type: string;
+    evidence_summary: string;
+    created_at: string;
+  }[];
+  historical_data_issues?: { session_id: number; health_status: string }[];
+  latest_teacher_check?: { check_id: string; reviewed_session?: number; decision?: string } | null;
+  latest_teacher_learning_review?: { review_id: string; reviewed_session?: number; next_action_summary?: string } | null;
+};
+
 export type DashboardData = {
   player?: Player;
   daily_mission?: DailyMission;
@@ -252,6 +309,7 @@ export type DashboardData = {
   reward_history?: RewardEvent[];
   coverage?: SkillCoverageContext;
   teaching_strategy?: TeachingStrategy;
+  teaching_system_health?: TeachingSystemHealth;
 };
 
 export type Observation = {
