@@ -6,6 +6,7 @@ import { DomainBars, Eyebrow, Icon, PageHeading, Panel, ProgressBar, Score, Sess
 import { useLearning } from './learning-provider';
 import type { TeachingPlan } from '@/lib/types';
 import styles from './learning-strategy.module.css';
+import { TeachingSystemHealthCard } from './teaching-system-health';
 
 export function DashboardView() {
   const { dashboard } = useLearning();
@@ -50,6 +51,7 @@ export function DashboardView() {
           <span className={styles.checkChip}>{teacherCheck?.due ? 'Method check due' : `Next check · ${teacherCheck?.next_checkpoint ?? 5} sessions`}</span>
         </div>
         <p className={styles.intro}>Each method is tied to a diagnosed problem and will be reviewed against independent first attempts, transfer and real meeting performance.</p>
+        <TeachingSystemHealthCard summary={dashboard.teaching_system_health} />
         <div className={styles.planGrid}>
           {strategyPlans.map((plan) => <StrategyCard key={plan.plan_id ?? plan.skill_id} plan={plan} />)}
         </div>
