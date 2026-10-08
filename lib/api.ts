@@ -1,4 +1,4 @@
-import type { DashboardData, LearningAnalytics, SessionDetail, SessionRow, SkillDetail } from './types';
+import type { DashboardData, LearningAnalytics, SessionDetail, SessionRow, SkillDetail, TeachingSystemHealth } from './types';
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? 'https://rhbmgrwyxeexemtgqcto.supabase.co';
 const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? 'sb_publishable_YxLVkClflfHL0akAQw9T7g_oAP3nBkN';
@@ -33,6 +33,8 @@ export const learningApi = {
     rpc<SkillDetail>('app_get_skill_detail_with_code', { p_code: code, p_skill_id: skillId }, signal),
   session: (code: string, sessionId: number, signal?: AbortSignal) =>
     rpc<SessionDetail>('app_get_session_detail_with_code', { p_code: code, p_session_id: sessionId }, signal),
+  teachingSystemHealth: (code: string, signal?: AbortSignal) =>
+    rpc<TeachingSystemHealth>('app_get_teaching_system_health_with_code', { p_code: code }, signal),
   analytics: (code: string, signal?: AbortSignal) =>
     rpc<LearningAnalytics>('app_get_learning_analytics_with_code', { p_code: code }, signal),
 };
