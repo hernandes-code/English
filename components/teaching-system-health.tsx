@@ -25,7 +25,7 @@ function stateCopy(state?: TeachingSystemState | null) {
     case 'monitoring':
       return 'The coach is collecting evidence or has an issue under observation.';
     case 'review_recommended':
-      return 'A recurring issue or missing self-checks need a teaching-system review.';
+      return 'A Teacher Check is due, or recurring issues or missing self-checks need review.';
     case 'architecture_review_needed':
       return 'At least one issue needs human review before changing system architecture.';
     default:
@@ -92,6 +92,9 @@ export function TeachingSystemHealthCard({ summary }: { summary?: TeachingSystem
             <span>{signal.owner_scope === 'architecture' ? 'Needs your review' : 'Coach monitoring'}</span>
           </div>
         ))}
+        {(state?.pending_teacher_check_count ?? 0) > 0 && (
+          <p className={styles.pending}>{state?.pending_teacher_check_count} Teacher Check{state?.pending_teacher_check_count === 1 ? '' : 's'} due. The coach must complete and save the checkpoint review.</p>
+        )}
         {state?.benchmark_completed && (state.pending_checks ?? 0) > 0 && (
           <p className={styles.pending}>{state.pending_checks} completed session{state.pending_checks === 1 ? '' : 's'} awaiting self-check.</p>
         )}
@@ -124,6 +127,23 @@ export function TeachingSystemHealthCard({ summary }: { summary?: TeachingSystem
                   </div>
                 ) : <p className={styles.notice}>Activation is gated on the Sprint 2 benchmark. No retroactive teaching evaluations will be invented.</p>}
               </section>
+              {(detail.teacher_check_obligations ?? []).length > 0 && (
+                <section className={styles.section}>
+                  <div className={styles.sectionHead}><h3>Teacher Check schedule</h3><span>Checkpoints, not learner scores</span></div>
+                  <div className={styles.stack}>
+                    {detail.teacher_check_obligations?.map(item => (
+                      <div className={styles.event} key={`${item.sprint_id}-${item.checkpoint_position}`}>
+                        <strong>Sprint {item.sprint_id} · {item.checkpoint_position}-session checkpoint</strong>
+                        <span>{item.obligation_status === 'historical_gap'
+                          ? 'Historical gap — not backfilled with a fictional check'
+                          : item.obligation_status === 'pending'
+                            ? 'Pending: coach must record a real Teacher Check'
+                            : 'Benchmark handoff — no duplicate check is required if the Sprint closes'}</span>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              )}
               <section className={styles.section}>
                 <div className={styles.sectionHead}><h3>Active signals</h3><span>{(detail.active_signals ?? []).length} active</span></div>
                 {(detail.active_signals ?? []).length > 0
