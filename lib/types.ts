@@ -250,6 +250,18 @@ export type TeachingSystemState = {
   review_signals: number;
   architecture_signals: number;
   last_tracked_session?: number | null;
+  pending_teacher_check_count?: number;
+  historical_teacher_check_gap_count?: number;
+};
+
+export type TeacherCheckObligation = {
+  sprint_id: number;
+  sprint_status: string;
+  completed_sessions: number;
+  checkpoint_position: number;
+  benchmark_completed_position: number | null;
+  obligation_status: 'pending' | 'historical_gap' | 'benchmark_handoff' | 'completed' | 'covered_by_benchmark' | 'upcoming';
+  check_id?: string | null;
 };
 
 export type TeachingSystemSignal = {
@@ -280,6 +292,7 @@ export type TeachingSystemHealth = {
   state?: TeachingSystemState | null;
   active_signals?: TeachingSystemSignal[];
   recent_checks?: TeachingSystemCheck[];
+  teacher_check_obligations?: TeacherCheckObligation[];
   signal_events?: {
     event_id: number;
     signal_key: string;
