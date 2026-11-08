@@ -318,3 +318,26 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Shared dashboard design language */
+.insightGrid { gap: 20px; margin-bottom: 20px; }
+.strategyPanel, .coveragePanel, .coverageOverview { padding: 24px; }
+.panelHeading h2, .coverageOverview h2 { font-weight: 600; letter-spacing: -.025em; }
+.intro, .coverageOverview p { color: var(--muted); font-size: 13px; }
+.checkChip, .neutralChip { padding: 7px 10px; border-color: var(--line); background: var(--surface-2); color: #57534e; font-weight: 600; }
+.planGrid { gap: 12px; }
+.planCard, .coverageStats div, .overviewStats span { border-color: var(--line); border-radius: 16px; background: var(--surface-2); }
+.planCard { padding: 16px; }
+.planCard > div span, .planCard > strong, .reviewLine strong { color: var(--text); }
+.planCard > div b, .planCard small, .coverageStats span, .overviewStats small { color: var(--muted); }
+.planCard p { color: #57534e; }
+.reviewLine { border-color: var(--line); color: var(--muted); }
+.nextProbe { padding: 16px; border-color: #bfdbfe; border-radius: 16px; background: #eff6ff; }
+.nextProbe > span { color: #2563eb; }.nextProbe p { color: #57534e; }
+.coverageLink { color: var(--text); }
+.emptyState { border-color: var(--line); border-radius: 16px; color: var(--muted); }
+.awaitingBadge { border-color: #bfdbfe; background: #eff6ff; color: #2563eb; }
+
+@media (max-width: 680px) {
+  .strategyPanel, .coveragePanel, .coverageOverview { padding: 20px; }
+}
