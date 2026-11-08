@@ -246,6 +246,8 @@ type ChartPoint = {
   date?: string;
   displayValue?: string;
   sampleCount?: number;
+  label?: string;
+  detail?: string;
 };
 
 type LineChartProps = {
@@ -299,25 +301,27 @@ export function SimpleLineChart({
         const sampleCount = point.sampleCount;
         const hasSample = sampleCount != null;
         const limitedSample = hasSample && sampleCount < 3;
-        const tooltipHeight = hasSample ? 68 : 52;
-        const tooltipX = Math.max(8, Math.min(width - 198, x - 95));
+        const tooltipHeight = hasSample ? 94 : 72;
+        const tooltipX = Math.max(8, Math.min(width - 258, x - 125));
         const tooltipY = y < tooltipHeight + 24 ? y + 16 : y - tooltipHeight - 14;
-        const date = point.date ? formatChartDate(point.date) : 'Date unavailable';
+        const date = point.detail ?? (point.date ? formatChartDate(point.date) : 'Date unavailable');
         const value = point.displayValue ?? point.y.toFixed(1);
         const sampleLabel = hasSample ? `${sampleCount} observation${sampleCount === 1 ? '' : 's'}${limitedSample ? ', limited sample' : ''}` : '';
-        return <g className="line-chart__point" key={`${point.x}-${point.y}`} tabIndex={0} role="img" aria-label={`Session ${point.x}, ${date}, ${metricLabel}: ${value}${sampleLabel ? `, ${sampleLabel}` : ''}`}>
+        const tooltipTitle = point.label ?? `Session ${point.x}`;
+        const tooltipDetail = point.detail ?? date;
+        return <g className="line-chart__point" key={`${point.x}-${point.y}`} tabIndex={0} role="img" aria-label={`${tooltipTitle}, ${tooltipDetail}, ${metricLabel}: ${value}${sampleLabel ? `, ${sampleLabel}` : ''}`}>
           <circle className="line-chart__hit-area" cx={x} cy={y} r="13"/>
           {limitedSample ? <circle className="line-chart__sample-ring" cx={x} cy={y} r="8"/> : null}
           <circle className={`line-chart__dot ${limitedSample ? 'line-chart__dot--limited' : ''}`} cx={x} cy={y} r={denseSeries ? 2.6 : 4.5} style={{ fill: color }}/>
           <g className="line-chart__tooltip" transform={`translate(${tooltipX} ${tooltipY})`}>
-            <rect width="190" height={tooltipHeight} rx="8"/>
-            <text x="11" y="18"><tspan className="line-chart__tooltip-title">Session {point.x}</tspan><tspan x="11" dy="18">{date} · {value}</tspan>{hasSample ? <tspan className={limitedSample ? 'line-chart__tooltip-warning' : ''} x="11" dy="17">{sampleLabel}</tspan> : null}</text>
+            <rect width="250" height={tooltipHeight} rx="10"/>
+            <text x="16" y="24"><tspan className="line-chart__tooltip-title">{tooltipTitle}</tspan><tspan className="line-chart__tooltip-detail" x="16" dy="22">{tooltipDetail}</tspan><tspan x="16" dy="21">{metricLabel}: {value}</tspan>{hasSample ? <tspan className={limitedSample ? 'line-chart__tooltip-warning' : ''} x="16" dy="20">{sampleLabel}</tspan> : null}</text>
           </g>
         </g>;
       })}
     </svg>
     <div className="line-chart__axis"><span>S{minX}</span><span>S{maxX}</span></div>
-    <div className="line-chart__hint"><Icon name="info" size={13}/><span>Hover, tap or focus a point to see details.{hasLimitedSamples ? ' Outlined points have fewer than 3 observations.' : ''}</span></div>
+    <div className="line-chart__hint"><Icon name="info" size={13}/><span>Hover, tap or focus a point to see details. Each point summarizes a chronological period.{hasLimitedSamples ? ' Outlined points have fewer than 3 observations.' : ''}</span></div>
   </div>;
 }
 
