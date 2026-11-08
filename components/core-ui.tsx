@@ -263,7 +263,7 @@ const DEFAULT_CHART_TICKS = [0, 25, 50, 75, 100];
 export function SimpleLineChart({
   points,
   height = 210,
-  color = 'var(--primary)',
+  color = '#fbbf24',
   metricLabel = 'Score',
   yMin = 0,
   yMax = 100,
@@ -274,6 +274,7 @@ export function SimpleLineChart({
   const usableW = width - pad.left - pad.right;
   const usableH = height - pad.top - pad.bottom;
   const valid = points.filter((point) => Number.isFinite(point.y));
+  const denseSeries = valid.length > 36;
   if (valid.length < 2) return <div className="chart-empty"><Icon name="info"/><span>More evidence is needed before a trend line is meaningful.</span></div>;
   const minX = Math.min(...valid.map((p) => p.x));
   const maxX = Math.max(...valid.map((p) => p.x));
@@ -288,7 +289,7 @@ export function SimpleLineChart({
   const mapY = (y:number) => pad.top + usableH - ((y-minY)/(maxY-minY || 1))*usableH;
   const path = valid.map((p,i) => `${i===0?'M':'L'} ${mapX(p.x).toFixed(2)} ${mapY(p.y).toFixed(2)}`).join(' ');
   const hasLimitedSamples = valid.some((point) => point.sampleCount != null && point.sampleCount < 3);
-  return <div className="line-chart">
+  return <div className="line-chart" data-density={denseSeries ? 'dense' : 'regular'}>
     <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label={`${metricLabel} by learning session`}>
       <g className="line-chart__grid">{visibleTicks.map((tick) => <g key={tick}><path d={`M ${pad.left} ${mapY(tick)} H ${width-pad.right}`}/><text x={pad.left-10} y={mapY(tick)+3} textAnchor="end">{tick}</text></g>)}</g>
       <path className="line-chart__path" style={{ stroke: color }} d={path}/>
@@ -307,7 +308,7 @@ export function SimpleLineChart({
         return <g className="line-chart__point" key={`${point.x}-${point.y}`} tabIndex={0} role="img" aria-label={`Session ${point.x}, ${date}, ${metricLabel}: ${value}${sampleLabel ? `, ${sampleLabel}` : ''}`}>
           <circle className="line-chart__hit-area" cx={x} cy={y} r="13"/>
           {limitedSample ? <circle className="line-chart__sample-ring" cx={x} cy={y} r="8"/> : null}
-          <circle className={`line-chart__dot ${limitedSample ? 'line-chart__dot--limited' : ''}`} cx={x} cy={y} r="4.5" style={{ fill: color }}/>
+          <circle className={`line-chart__dot ${limitedSample ? 'line-chart__dot--limited' : ''}`} cx={x} cy={y} r={denseSeries ? 2.6 : 4.5} style={{ fill: color }}/>
           <g className="line-chart__tooltip" transform={`translate(${tooltipX} ${tooltipY})`}>
             <rect width="190" height={tooltipHeight} rx="8"/>
             <text x="11" y="18"><tspan className="line-chart__tooltip-title">Session {point.x}</tspan><tspan x="11" dy="18">{date} · {value}</tspan>{hasSample ? <tspan className={limitedSample ? 'line-chart__tooltip-warning' : ''} x="11" dy="17">{sampleLabel}</tspan> : null}</text>

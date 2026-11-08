@@ -591,9 +591,14 @@ body::before { display: none; }
 .analytics-metric { padding: 20px; border-color: var(--line); border-radius: var(--radius); background: #fff; box-shadow: var(--shadow-soft); }
 .analytics-metric strong { font-weight: 600; }
 .chart-card > p, .benchmark-card > p { color: var(--muted); }
-.line-chart { margin-top: 22px; border-radius: 16px; background: #1c1917; padding: 12px; }
+.line-chart { margin-top: 22px; border-radius: 16px; background: linear-gradient(145deg, #1c1917 0%, #292524 100%); padding: 16px; }
 .line-chart__grid path { stroke: rgba(231,229,228,.12); }.line-chart__grid text, .line-chart__axis, .line-chart__hint { color: #e7e5e4; fill: #e7e5e4; }
-.line-chart__path { stroke: #fef3c7; }.line-chart__dot { stroke: #f59e0b; stroke-width: 2px; }.line-chart__tooltip rect { fill: #111827; }.line-chart__tooltip text { fill: #fff; }
+.line-chart__path { stroke-width: 2.5px; stroke-dasharray: none; stroke-dashoffset: 0; animation: none; filter: drop-shadow(0 2px 4px rgba(0, 0, 0, .35)); }
+.line-chart__dot { stroke: #1c1917; stroke-width: 1.5px; opacity: .9; animation: none; }
+.line-chart[data-density="dense"] .line-chart__dot { opacity: .72; }
+.line-chart__point:hover .line-chart__dot, .line-chart__point:focus .line-chart__dot { stroke: #fff; stroke-width: 2px; opacity: 1; }
+.line-chart__sample-ring { stroke: #fef3c7; stroke-width: 1.5px; }
+.line-chart__tooltip rect { fill: #111827; }.line-chart__tooltip text { fill: #fff; }
 .movers-list > div { padding: 14px; border-radius: 16px; background: var(--surface-2); }
 .confidence-bars > div { border-color: var(--line); background: var(--surface-2); }
 
